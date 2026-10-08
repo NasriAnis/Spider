@@ -7,12 +7,20 @@ TARGET    = ../../build/Spider-IA-32
 CC        = gcc
 CFLAGS    = -m32 -ffreestanding -Wall -Wextra -g \
 			-fno-pie
-AS        = as --32
+AS        = as -g --32
 
 all: $(TARGET)
 
 run: $(TARGET)
 	qemu-system-i386 -kernel $(TARGET)
+
+debug: $(TARGET)
+	qemu-system-i386 -s -S -kernel $(TARGET) &
+	gdb -ex "set disassembly-flavor intel" \
+		-ex "target remote localhost:1234" \
+		-ex "set architecture i386" \
+		-ex "symbol-file $(TARGET)" \
+		-ex "break kmain"
 
 $(TARGET): boot.o $(OBJS)
 	@mkdir -p $(dir $@)
