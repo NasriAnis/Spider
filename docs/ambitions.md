@@ -1,0 +1,1 @@
+# Why do i want to build my own kernel
