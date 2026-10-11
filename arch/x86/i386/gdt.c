@@ -1,5 +1,4 @@
-#include "../../drivers/screen.h"
-#include "../../lib/int.h"
+#include "../../../drivers/screen.h"
 #include "gdt.h"
 
 static uint8_t GDT[GDT_ENTRIES][GDT_ENTRY_SIZE];

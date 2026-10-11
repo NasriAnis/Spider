@@ -1,4 +1,4 @@
-#include "../../lib/int.h"
+#include "../../../lib/int.h"
 
 struct GDTdata {
 	uint32_t SegmentBase;
