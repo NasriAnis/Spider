@@ -1,15 +1,25 @@
 .intel_syntax noprefix
 
 // layout for Multiboot2 header
-.set MAGIC,    0x1BADB002
-.set FLAGS,    (1<<0 | 1<<1)
-.set CHECKSUM, -(MAGIC + FLAGS)
+.set MB2_MAGIC,    0xE85250D6
+.set MB2_ARCH,     0                 # 0 = i386 protected mode
+.set MB2_LENGTH,   (header_end - header_start)
+.set MB2_CHECKSUM, -(MB2_MAGIC + MB2_ARCH + MB2_LENGTH)
 
 .section .multiboot
-.align 4
-.long MAGIC
-.long FLAGS
-.long CHECKSUM
+.align 8
+header_start:
+    .long MB2_MAGIC
+    .long MB2_ARCH
+    .long MB2_LENGTH
+    .long MB2_CHECKSUM
+
+    # end tag
+    .align 8
+    .short 0        # type
+    .short 0        # flags
+    .long 8         # size
+header_end:
 
 // setup the stack 16 KiB
 .section .bss
@@ -23,10 +33,13 @@ stack_top:
 .global _start
 .type _start, @function
 _start:
-	mov esp, offset stack_top
-	call kmain
-   	cli
-1:	hlt
-	jmp 1b
+    cli
+    cld
+    mov esp, offset stack_top
+    push ebx            # info pointer
+    push eax            # magic
+    call kmain
+    1:  hlt
+    jmp 1b
 
 .size _start, . - _start

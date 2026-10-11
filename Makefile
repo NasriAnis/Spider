@@ -6,6 +6,9 @@ all:
 run:
 	make -C arch/$(ARCH) run
 
+iso:
+	make -C arch/$(ARCH) iso
+
 debug:
 	make -C arch/$(ARCH) debug
 

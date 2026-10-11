@@ -2,7 +2,9 @@ C_SOURCES = $(wildcard ../../../kernel/*.c ../../../drivers/*.c ../../../lib/*.c
 HEADERS   = $(wildcard ../../../kernel/*.h ../../../drivers/*.h ../../../lib/*.h ../../init.h ./*.h)
 OBJS      = $(C_SOURCES:.c=.o)
 
-TARGET    = ../../build/Spider-IA-32
+TARGET    = ../../../build/Spider-IA-32
+ISO    = ../../../build/spider.iso
+ISODIR = ../../../build/isodir
 
 CC        = gcc
 CFLAGS    = -m32 -ffreestanding -Wall -Wextra -g \
@@ -11,16 +13,22 @@ AS        = as -g --32
 
 all: $(TARGET)
 
-run: $(TARGET)
-	qemu-system-i386 -kernel $(TARGET)
+run: iso
+	qemu-system-i386 -no-reboot -cdrom $(ISO)
 
 debug: $(TARGET)
-	qemu-system-i386 -s -S -kernel $(TARGET) &
+	qemu-system-i386 -s -S -no-reboot -cdrom $(ISO) &
 	gdb -ex "set disassembly-flavor intel" \
 		-ex "target remote localhost:1234" \
 		-ex "set architecture i386" \
 		-ex "symbol-file $(TARGET)" \
 		-ex "break kmain"
+
+iso: $(TARGET)
+	mkdir -p $(ISODIR)/boot/grub
+	cp $(TARGET) $(ISODIR)/boot/spider.elf
+	printf 'set timeout=0\nset default=0\nmenuentry "Spider" {\n\tmultiboot2 /boot/spider.elf\n\tboot\n}\n' > $(ISODIR)/boot/grub/grub.cfg
+	grub-mkrescue -o $(ISO) $(ISODIR)
 
 $(TARGET): boot.o $(OBJS)
 	@mkdir -p $(dir $@)
@@ -33,4 +41,5 @@ $(TARGET): boot.o $(OBJS)
 	$(AS) -o $@ $<
 
 clean:
-	rm -f boot.o $(OBJS) $(TARGET)
+	rm -f boot.o $(OBJS) $(TARGET) $(ISO)
+	rm -rf $(ISODIR)
