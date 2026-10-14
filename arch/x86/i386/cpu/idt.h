@@ -1,4 +1,4 @@
-#include "../../../lib/int.h"
+#include "../../../../lib/int.h"
 
 struct InterruptDescriptorEntry {
 	uint16_t offset_1;        // offset bits 0..15
@@ -16,3 +16,7 @@ struct IDTR {
 #define IDT_ENTRIES 0x22
 
 void init_idt();
+void load_idt();
+void icw_setup();
+void imr_setup(uint8_t mask);
+void set_idt_gate(int n, unsigned long handler);

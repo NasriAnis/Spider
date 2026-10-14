@@ -1,0 +1,1 @@
+void cpu_interrupts_setup();

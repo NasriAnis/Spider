@@ -1,7 +1,8 @@
 #include "idt.h"
-#include "../../../lib/int.h"
-#include "../pio.h"
-#include "../../../drivers/io/keyboard.h"
+#include "../../../../lib/int.h"
+#include "../../pio.h"
+#include "../../../../drivers/io/keyboard.h"
+#include "isr.h"
 
 static struct InterruptDescriptorEntry IDT[IDT_ENTRIES];
 static struct IDTR idtr;
@@ -17,6 +18,7 @@ void init_idt(){
 	icw_setup();
 	imr_setup(0xFF);
 
+	cpu_interrupts_setup();
 	set_idt_gate(0x21, (unsigned long)keyboard_handler_stub); // for keyboard
 
 	idtr.limit = (sizeof(struct InterruptDescriptorEntry) * IDT_ENTRIES) - 1;
