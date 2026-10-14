@@ -1,6 +1,6 @@
-C_SOURCES = $(wildcard ../../../kernel/*.c ../../../drivers/*.c ../../../lib/*.c ./*.c)
+C_SOURCES = $(wildcard ../../../kernel/*.c ../../../drivers/*/*.c ../../../lib/*.c ../*.c ./*.c)
 S_SOURCES = $(wildcard ./*.s)
-HEADERS   = $(wildcard ../../../kernel/*.h ../../../drivers/*.h ../../../lib/*.h ../../init.h ./*.h)
+HEADERS   = $(wildcard ../../../kernel/*.h ../../../drivers/*/*.h ../../../lib/*.h ../../init.h ../*.h ./*.h)
 OBJS      = $(C_SOURCES:.c=.o) $(S_SOURCES:.s=.o)
 
 TARGET    = ../../../build/Spider-IA-32
@@ -28,7 +28,9 @@ debug: $(TARGET)
 iso: $(TARGET)
 	mkdir -p $(ISODIR)/boot/grub
 	cp $(TARGET) $(ISODIR)/boot/spider.elf
-	printf 'set timeout=0\nset default=0\nmenuentry "Spider" {\n\tmultiboot2 /boot/spider.elf\n\tboot\n}\n' > $(ISODIR)/boot/grub/grub.cfg
+	printf 'set timeout=0\nset default=0\nmenuentry \
+		"Spider" {\n\tmultiboot2 /boot/spider.elf\n\tboot\n}\n' \
+	 	> $(ISODIR)/boot/grub/grub.cfg
 	grub-mkrescue -o $(ISO) $(ISODIR)
 
 $(TARGET): $(OBJS)

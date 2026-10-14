@@ -1,8 +1,8 @@
-#include "../../init.h"
+#include "../../arch.h"
 #include "gdt.h"
 #include "idt.h"
 
 void init_arch(void){
-	initGDT();
+	init_gdt();
 	init_idt();
 }

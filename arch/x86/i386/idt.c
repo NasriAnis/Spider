@@ -1,7 +1,7 @@
 #include "idt.h"
 #include "../../../lib/int.h"
-#include "../../../drivers/ports.h"
-#include "../../../drivers/keyboard.h"
+#include "../ports.h"
+#include "../../../drivers/io/keyboard.h"
 
 static struct InterruptDescriptorEntry IDT[IDT_ENTRIES];
 static struct IDTR idtr;
@@ -19,9 +19,8 @@ void init_idt(){
 
 	set_idt_gate(0x21, (unsigned long)keyboard_handler_stub); // for keyboard
 
-	unsigned long idt_address = (unsigned long)IDT ;
 	idtr.limit = (sizeof(struct InterruptDescriptorEntry) * IDT_ENTRIES) - 1;
-    idtr.base  = (uint32_t)&IDT;
+	idtr.base  = (uint32_t)&IDT;
 
 	load_idt();
 
@@ -30,7 +29,7 @@ void init_idt(){
 
 void load_idt(){
 	__asm__ volatile ("lidt %0" :: "m" (idtr));
-    __asm__ volatile ("sti");
+	__asm__ volatile ("sti");
 }
 
 void set_idt_gate(int n, unsigned long handler){

@@ -1,6 +1,6 @@
 #include "../../../lib/int.h"
 
-struct GDTdata {
+struct GlobalDescriptorTableEntry {
 	uint32_t SegmentBase;
 	uint32_t SegmentLimit; // low 20 bits used
 	uint8_t AccessByte;
@@ -29,4 +29,4 @@ struct __attribute__((packed)) GDTR {
 	* ff ff 00 00 00 fa cf 00    # user code
 	* ff ff 00 00 00 f2 cf 00    # user data
 */
-void initGDT(void);
+void init_gdt(void);

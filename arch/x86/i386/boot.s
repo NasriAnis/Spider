@@ -9,16 +9,16 @@
 .section .multiboot
 .align 8
 header_start:
-    .long MB2_MAGIC
-    .long MB2_ARCH
-    .long MB2_LENGTH
-    .long MB2_CHECKSUM
+	.long MB2_MAGIC
+	.long MB2_ARCH
+	.long MB2_LENGTH
+	.long MB2_CHECKSUM
 
-    # end tag
-    .align 8
-    .short 0        # type
-    .short 0        # flags
-    .long 8         # size
+	# end tag
+	.align 8
+	.short 0        # type
+	.short 0        # flags
+	.long 8         # size
 header_end:
 
 // setup the stack 16 KiB
@@ -33,13 +33,13 @@ stack_top:
 .global _start
 .type _start, @function
 _start:
-    cli
-    cld
-    mov esp, offset stack_top
-    push ebx            # info pointer
-    push eax            # magic
-    call kmain
-    1:  hlt
-    jmp 1b
+	cli
+	cld
+	mov esp, offset stack_top
+	push ebx            # info pointer
+	push eax            # magic
+	call kmain
+	1:  hlt
+	jmp 1b
 
 .size _start, . - _start

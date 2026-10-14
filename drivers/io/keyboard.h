@@ -1,0 +1,1 @@
+void keyboard_on_scancode(unsigned char scancode);

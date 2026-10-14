@@ -1,5 +1,5 @@
-#include "../drivers/screen.h"
-#include "../arch/init.h"
+#include "console.h"
+#include "../arch/arch.h"
 #include "../lib/int.h"
 
 #define MB2_BOOT_MAGIC 0x36D76289

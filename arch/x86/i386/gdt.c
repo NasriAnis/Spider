@@ -1,57 +1,57 @@
-#include "../../../drivers/screen.h"
+#include "../../../kernel/console.h"
 #include "gdt.h"
 
 static uint8_t GDT[GDT_ENTRIES][GDT_ENTRY_SIZE];
 static struct GDTR gdtr;
 
-void encodeGdtEntry(uint8_t *target, struct GDTdata source);
-void loadGDT(struct GDTR *gdtr);
+void encode_gdt_entry(uint8_t *target, struct GlobalDescriptorTableEntry source);
+void load_gdt(struct GDTR *gdtr);
 
-void initGDT(void){
-	struct GDTdata NullDescriptor = {
-        .SegmentBase = 0,
-        .SegmentLimit = 0,
-        .AccessByte = 0x00,
-        .Flags = 0x0
-    };
-	struct GDTdata KernelSpaceCode = {
+void init_gdt(void){
+	struct GlobalDescriptorTableEntry NullDescriptor = {
+		.SegmentBase = 0,
+		.SegmentLimit = 0,
+		.AccessByte = 0x00,
+		.Flags = 0x0
+	};
+	struct GlobalDescriptorTableEntry KernelSpaceCode = {
 		.SegmentBase  = 0x0,
 		.SegmentLimit = 0xFFFFF,
 		.AccessByte   = 0x9A,
 		.Flags        = 0xC
 	};
-	struct GDTdata KernelSpaceData = {
+	struct GlobalDescriptorTableEntry KernelSpaceData = {
 		.SegmentBase  = 0x0,
 		.SegmentLimit = 0xFFFFF,
 		.AccessByte   = 0x92,
 		.Flags        = 0xC
 	};
-	struct GDTdata UserSpaceCode = {
+	struct GlobalDescriptorTableEntry UserSpaceCode = {
 		.SegmentBase  = 0x0,
 		.SegmentLimit = 0xFFFFF,
 		.AccessByte   = 0xFA,
 		.Flags        = 0xC
 	};
-	struct GDTdata UserSpaceData = {
+	struct GlobalDescriptorTableEntry UserSpaceData = {
 		.SegmentBase  = 0x0,
 		.SegmentLimit = 0xFFFFF,
 		.AccessByte   = 0xF2,
 		.Flags        = 0xC
 	};
 
-	encodeGdtEntry(GDT[0], NullDescriptor);
-	encodeGdtEntry(GDT[1], KernelSpaceCode);
-	encodeGdtEntry(GDT[2], KernelSpaceData);
-	encodeGdtEntry(GDT[3], UserSpaceCode);
-	encodeGdtEntry(GDT[4], UserSpaceData);
+	encode_gdt_entry(GDT[0], NullDescriptor);
+	encode_gdt_entry(GDT[1], KernelSpaceCode);
+	encode_gdt_entry(GDT[2], KernelSpaceData);
+	encode_gdt_entry(GDT[3], UserSpaceCode);
+	encode_gdt_entry(GDT[4], UserSpaceData);
 
 	gdtr.limit = sizeof(GDT) - 1;
 	gdtr.base  = (uint32_t)GDT;
 
-	loadGDT(&gdtr);
+	load_gdt(&gdtr);
 }
 
-void loadGDT(struct GDTR *gdtr){
+void load_gdt(struct GDTR *gdtr){
 	asm(
 		"lgdt (%0)" :: "r" (gdtr)
 	);
@@ -68,7 +68,7 @@ void loadGDT(struct GDTR *gdtr){
 	);
 }
 
-void encodeGdtEntry(uint8_t *target, struct GDTdata source){
+void encode_gdt_entry(uint8_t *target, struct GlobalDescriptorTableEntry source){
 	if (source.SegmentLimit > 0xFFFFF) {
 		// [FIX] make a kernel error handler
 		eprintnl("GDT cannot encode limits larger than 0xFFFFF");
