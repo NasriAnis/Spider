@@ -16,7 +16,7 @@ void kmain(uint32_t magic, void *mbi){
 	printnl("Welcome to the Spider Os kernel !");
 
 	init_arch();
-	printnl("Init architecture finished !");
+
 	while (1) {
 	}
 }
