@@ -1,6 +1,7 @@
 C_SOURCES = $(wildcard ../../../kernel/*.c ../../../drivers/*.c ../../../lib/*.c ./*.c)
+S_SOURCES = $(wildcard ./*.s)
 HEADERS   = $(wildcard ../../../kernel/*.h ../../../drivers/*.h ../../../lib/*.h ../../init.h ./*.h)
-OBJS      = $(C_SOURCES:.c=.o)
+OBJS      = $(C_SOURCES:.c=.o) $(S_SOURCES:.s=.o)
 
 TARGET    = ../../../build/Spider-IA-32
 ISO    = ../../../build/spider.iso
@@ -8,13 +9,13 @@ ISODIR = ../../../build/isodir
 
 CC        = gcc
 CFLAGS    = -m32 -ffreestanding -Wall -Wextra -g \
-			-fno-pie
+			-fno-pie -fno-stack-protector
 AS        = as -g --32
 
 all: $(TARGET)
 
 run: iso
-	qemu-system-i386 -no-reboot -cdrom $(ISO)
+	qemu-system-i386 -no-reboot -d int,cpu_reset -cdrom $(ISO)
 
 debug: $(TARGET)
 	qemu-system-i386 -s -S -no-reboot -cdrom $(ISO) &
@@ -30,7 +31,7 @@ iso: $(TARGET)
 	printf 'set timeout=0\nset default=0\nmenuentry "Spider" {\n\tmultiboot2 /boot/spider.elf\n\tboot\n}\n' > $(ISODIR)/boot/grub/grub.cfg
 	grub-mkrescue -o $(ISO) $(ISODIR)
 
-$(TARGET): boot.o $(OBJS)
+$(TARGET): $(OBJS)
 	@mkdir -p $(dir $@)
 	ld -m elf_i386 -T linker.ld -o $@ $^
 
