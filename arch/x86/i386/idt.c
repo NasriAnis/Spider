@@ -1,6 +1,6 @@
 #include "idt.h"
 #include "../../../lib/int.h"
-#include "../ports.h"
+#include "../pio.h"
 #include "../../../drivers/io/keyboard.h"
 
 static struct InterruptDescriptorEntry IDT[IDT_ENTRIES];

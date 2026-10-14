@@ -1,5 +1,5 @@
 #include "../../drivers/video/display.h"
-#include "../../arch/x86/ports.h"
+#include "../../arch/x86/pio.h"
 
 #define VGA_MEM   ((volatile unsigned char *)0xB8000)
 
