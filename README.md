@@ -43,3 +43,8 @@ for this project etc...
 # Note
 Since this project is still in active dev, some documentations
 and other stuffs can be missing.
+
+# images
+<p align="center">
+  <img src="docs/assets/image.png">
+</p>
