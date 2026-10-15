@@ -1,4 +1,4 @@
-C_SOURCES = $(wildcard ../../../kernel/*.c ../../../kernel/shell/*.c ../../../drivers/*/*.c ../../../lib/*.c ../*.c ./*.c ./cpu/*c)
+C_SOURCES = $(wildcard ../../../kernel/*.c ../../../kernel/shell/*.c ../../../drivers/*/*.c ../../../lib/*.c ../*.c ./*.c ./cpu/*.c)
 S_SOURCES = $(wildcard ./*.s ./cpu/*.s ./cpu/interrupts/*.s)
 HEADERS   = $(wildcard ../../../kernel/*.h ../../../kernel/shell/*.h ../../../drivers/*/*.h ../../../lib/*.h ../../init.h ../*.h ./*/*.h)
 OBJS      = $(C_SOURCES:.c=.o) $(S_SOURCES:.s=.o)
@@ -11,6 +11,8 @@ CC        = gcc
 CFLAGS    = -m32 -ffreestanding -Wall -Wextra -g \
 			-fno-pie -fno-stack-protector
 AS        = as -g --32
+
+LIMINE = /usr/share/limine
 
 all: $(TARGET)
 
@@ -26,12 +28,18 @@ debug: $(TARGET)
 		-ex "break kmain"
 
 iso: $(TARGET)
-	mkdir -p $(ISODIR)/boot/grub
+	rm -rf $(ISODIR)
+	mkdir -p $(ISODIR)/boot/limine $(ISODIR)/EFI/BOOT
 	cp $(TARGET) $(ISODIR)/boot/spider.elf
-	printf 'set timeout=0\nset default=0\nmenuentry \
-		"Spider" {\n\tmultiboot2 /boot/spider.elf\n\tboot\n}\n' \
-	 	> $(ISODIR)/boot/grub/grub.cfg
-	grub-mkrescue -o $(ISO) $(ISODIR)
+	cp limine.conf $(ISODIR)/boot/limine/
+	cp $(LIMINE)/limine-bios.sys $(LIMINE)/limine-bios-cd.bin $(LIMINE)/limine-uefi-cd.bin $(ISODIR)/boot/limine/
+	cp $(LIMINE)/BOOTIA32.EFI $(LIMINE)/BOOTX64.EFI $(ISODIR)/EFI/BOOT/
+	xorriso -as mkisofs -R -r -J -b boot/limine/limine-bios-cd.bin \
+		-no-emul-boot -boot-load-size 4 -boot-info-table -hfsplus \
+		-apm-block-size 2048 --efi-boot boot/limine/limine-uefi-cd.bin \
+		-efi-boot-part --efi-boot-image --protective-msdos-label \
+		$(ISODIR) -o $(ISO)
+	limine bios-install $(ISO)
 
 $(TARGET): $(OBJS)
 	@mkdir -p $(dir $@)

@@ -19,8 +19,8 @@ THIS PROJECT IS STILL IN DEVELLOPMENT !!!!
 This operating system support multitude architecture specified inside
 the `/arch` folder.
 
-To run this OS you need a qemu emulator as well as some grub tools.
-the list of requirements are: `qemu`, `grub`, `xorriso`, `mtools`.
+To run this OS you need the qemu emulator and some ISO/boot tools.
+The list of requirements is: `qemu`, `xorriso` (from `libisoburn`), `limine`.
 
 After choosing your tarrget OS, you just have to run these commands
 at the root directory of the project:
