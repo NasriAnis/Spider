@@ -1,8 +1,8 @@
 #include "../../lib/int.h"
 
 struct command {
-    const char *name;
-    void (*fn)(int argc, char **argv);
+	const char *name;
+	void (*fn)(int argc, char **argv);
 };
 
 extern const struct command commands[];

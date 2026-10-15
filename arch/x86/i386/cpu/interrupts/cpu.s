@@ -4,31 +4,31 @@
 .text
 
 isr_common_handler_stub:
-    pop eax
-    pusha
-    push eax
-    call cpu_interrupts_handler
-    pop eax
-    mov al, 0x20          # (EOI)
-    out 0x20, al
-    popa
-    iret
+	pop eax
+	pusha
+	push eax
+	call cpu_interrupts_handler
+	pop eax
+	mov al, 0x20          # (EOI)
+	out 0x20, al
+	popa
+	iret
 
 .macro ISR_NOERRCODE num
 .global isr\num
 isr\num:
-    cli
-    push 0                # GNU as handles push constants directly
-    push \num
-    jmp isr_common_handler_stub
+	cli
+	push 0                # GNU as handles push constants directly
+	push \num
+	jmp isr_common_handler_stub
 .endm
 
 .macro ISR_ERRCODE num
 .global isr\num
 isr\num:
-    cli
-    push \num
-    jmp isr_common_handler_stub
+	cli
+	push \num
+	jmp isr_common_handler_stub
 .endm
 
 ISR_NOERRCODE 0
