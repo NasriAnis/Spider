@@ -1,5 +1,6 @@
 #include "../../../kernel/console.h"
 #include "gdt.h"
+#include "tss.h"
 
 static uint8_t GDT[GDT_ENTRIES][GDT_ENTRY_SIZE];
 static struct GDTR gdtr;
@@ -47,8 +48,12 @@ void init_gdt(void){
 
 	gdtr.limit = sizeof(GDT) - 1;
 	gdtr.base  = (uint32_t)GDT;
-
 	load_gdt(&gdtr);
+
+	struct GlobalDescriptorTableEntry TssDescriptor;
+	init_tss(&TssDescriptor);
+	encode_gdt_entry(GDT[5], TssDescriptor);
+	load_task_register();
 }
 
 void load_gdt(struct GDTR *gdtr){

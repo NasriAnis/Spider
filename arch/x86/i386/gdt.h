@@ -7,13 +7,16 @@ struct GlobalDescriptorTableEntry {
 	uint8_t Flags;         // low 4 bits used
 };
 
-#define GDT_ENTRIES 5
+#define GDT_ENTRIES 6
 #define GDT_ENTRY_SIZE 8
 
 struct __attribute__((packed)) GDTR {
 	uint16_t limit;
 	uint32_t base;
 };
+
+#define KERNEL_CODE_SEGMENT 0x8
+#define KERNEL_DATA_SEGMENT 0x10
 
 /*
 	* Initialize GDT table to memory
@@ -28,5 +31,6 @@ struct __attribute__((packed)) GDTR {
 	* ff ff 00 00 00 92 cf 00    # kernel data
 	* ff ff 00 00 00 fa cf 00    # user code
 	* ff ff 00 00 00 f2 cf 00    # user data
+	* # TSS descriptor
 */
 void init_gdt(void);
