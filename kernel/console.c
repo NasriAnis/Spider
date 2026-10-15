@@ -25,6 +25,16 @@ static void put_string(char *s, int color) {
 	for (int i = 0; s[i]; i++) put_char(s[i], color);
 }
 
+void backspace(){
+	if (display_backspace(cur_row, cur_col)){
+		cur_col -= 1;
+		cur_row -= 1;
+	}
+	else {
+		cur_col -= 1;
+	}
+}
+
 void print(char *m)     { put_string(m, COLOR_WHITE); }
 void eprint(char *m)    { put_string(m, COLOR_RED); }
 void printnl(char *m)   { print(m);  put_char('\n', COLOR_WHITE); }

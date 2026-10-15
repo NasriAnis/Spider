@@ -6,3 +6,4 @@ void display_put_cell(int col, int row, char c, int color);
 void display_set_cursor(int col, int row);
 void display_clear(void);
 void display_scroll(void);
+int display_backspace(int current_row, int current_col);

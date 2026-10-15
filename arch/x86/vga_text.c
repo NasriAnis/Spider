@@ -46,3 +46,14 @@ void display_scroll(void) {
 	for (int c = 0; c < COLS; c++)
 		display_put_cell(c, ROWS - 1, ' ', COLOR_WHITE);
 }
+
+int display_backspace(int current_row, int current_col){
+	if (current_row-1 < 0){
+		display_put_cell(current_col-1, current_row-1, ' ', COLOR_WHITE);
+		display_set_cursor(current_col-1, current_row-1);
+		return 1;
+	}
+	display_put_cell(current_col-1, current_row, ' ', COLOR_WHITE);
+	display_set_cursor(current_col-1, current_row);
+	return 0;
+}
