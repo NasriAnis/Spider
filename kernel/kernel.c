@@ -1,6 +1,7 @@
 #include "console.h"
 #include "../arch/arch.h"
 #include "../lib/int.h"
+#include "shell/shell.h"
 
 #define MB2_BOOT_MAGIC 0x36D76289
 
@@ -13,9 +14,11 @@ void kmain(uint32_t magic, void *mbi){
 	}
 	(void)mbi; // will parse the tags later
 
-	printnl("Welcome to the Spider Os kernel !");
-
 	init_arch();
+
+	printnl("\nWelcome to the Spider Os !\n");
+
+	kernel_shell_run();
 
 	while (1) {
 	}

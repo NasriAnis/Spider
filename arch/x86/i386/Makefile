@@ -1,6 +1,6 @@
-C_SOURCES = $(wildcard ../../../kernel/*.c ../../../drivers/*/*.c ../../../lib/*.c ../*.c ./*.c ./cpu/*c)
+C_SOURCES = $(wildcard ../../../kernel/*.c ../../../kernel/shell/*.c ../../../drivers/*/*.c ../../../lib/*.c ../*.c ./*.c ./cpu/*c)
 S_SOURCES = $(wildcard ./*.s ./cpu/*.s ./cpu/interrupts/*.s)
-HEADERS   = $(wildcard ../../../kernel/*.h ../../../drivers/*/*.h ../../../lib/*.h ../../init.h ../*.h ./*/*.h)
+HEADERS   = $(wildcard ../../../kernel/*.h ../../../kernel/shell/*.h ../../../drivers/*/*.h ../../../lib/*.h ../../init.h ../*.h ./*/*.h)
 OBJS      = $(C_SOURCES:.c=.o) $(S_SOURCES:.s=.o)
 
 TARGET    = ../../../build/Spider-IA-32
