@@ -4,8 +4,8 @@
 #include "../../../kernel/console.h"
 
 void init_arch(void){
-	init_gdt();
-	printnl("[/] Init GDT tables succesfully");
 	init_idt();
 	printnl("[/] Init IDT tables and interrupts succesfully");
+	init_gdt();
+	printnl("[/] Init GDT tables succesfully");
 }
