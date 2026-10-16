@@ -8,15 +8,15 @@ static struct InterruptDescriptorEntry IDT[IDT_ENTRIES];
 static struct IDTR idtr;
 
 void load_idt();
-void icw_setup();
-void imr_setup(uint8_t mask);
+void pic_setup_icw();
+void pic_imr_setup(uint8_t mask);
 void set_idt_gate(int n, unsigned long handler);
 
 extern void keyboard_handler_stub(void);
 
 void init_idt(){
-	icw_setup();
-	imr_setup(0xFF);
+	pic_setup_icw();
+	pic_imr_setup(0xFF);
 
 	cpu_interrupts_setup();
 	set_idt_gate(0x21, (unsigned long)keyboard_handler_stub); // for keyboard
@@ -26,7 +26,7 @@ void init_idt(){
 
 	load_idt();
 
-	imr_setup(0xFD); // for keyboard
+	pic_imr_setup(0xFD); // for keyboard
 }
 
 void load_idt(){
@@ -43,7 +43,7 @@ void set_idt_gate(int n, unsigned long handler){
 	IDT[n].offset_2 = (handler_address & 0xffff0000) >> 16;
 }
 
-void icw_setup(){
+void pic_setup_icw(){
 	/*
 	*	      | PIC1	PIC2
 	* -----------------------
@@ -74,7 +74,7 @@ void icw_setup(){
 	port_byte_out(0xA1 , 0x01);
 }
 
-void imr_setup(uint8_t mask){
+void pic_imr_setup(uint8_t mask){
 	port_byte_out(0x21 , mask);
 	port_byte_out(0xA1 , mask);
 }

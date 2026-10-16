@@ -17,6 +17,6 @@ struct IDTR {
 
 void init_idt();
 void load_idt();
-void icw_setup();
-void imr_setup(uint8_t mask);
+void pic_setup_icw();
+void pic_imr_setup(uint8_t mask);
 void set_idt_gate(int n, unsigned long handler);
