@@ -38,7 +38,7 @@ _start:
 	mov esp, offset stack_top
 	push ebx            # info pointer
 	push eax            # magic
-	call kmain
+	call boot_check
 	1:  hlt
 	jmp 1b
 
