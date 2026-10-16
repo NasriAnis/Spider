@@ -12,6 +12,7 @@ ld
 ### Boot loader:
 Limine with multiboot2 for i386 arch:
 - https://dn760103.eu.archive.org/0/items/os-dev-manuals/multiboot2.pdf
+- https://www.gnu.org/software/grub/manual/multiboot2/multiboot.html
 
 ### Virtualization:
 QEMU
