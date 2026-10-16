@@ -9,16 +9,16 @@ static void put_char(char c, int color) {
 		cur_col = 0;
 		cur_row++;
 	} else {
-		display_put_cell(cur_col, cur_row, c, color);
+		display->put_cell(cur_col, cur_row, c, color);
 		cur_col++;
-		if (cur_col >= display_cols()) { cur_col = 0; cur_row++; }
+		if (cur_col >= display->cols()) { cur_col = 0; cur_row++; }
 	}
 
-	if (cur_row >= display_rows()) {
-		display_scroll();
-		cur_row = display_rows() - 1;
+	if (cur_row >= display->rows()) {
+		display->scroll();
+		cur_row = display->rows() - 1;
 	}
-	display_set_cursor(cur_col, cur_row);
+	display->set_cursor(cur_col, cur_row);
 }
 
 static void put_string(char *s, int color) {
@@ -26,7 +26,7 @@ static void put_string(char *s, int color) {
 }
 
 void backspace(){
-	if (display_backspace(cur_row, cur_col)){
+	if (display->backspace(cur_row, cur_col)){
 		cur_col -= 1;
 		cur_row -= 1;
 	}
@@ -41,7 +41,7 @@ void printnl(char *m)   { print(m);  put_char('\n', COLOR_WHITE); }
 void eprintnl(char *m)  { eprint(m); put_char('\n', COLOR_RED); }
 
 void clear_screen(void) {
-	display_clear();
+	display->clear();
 	cur_col = 0;
 	cur_row = 0;
 }

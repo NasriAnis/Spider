@@ -1,9 +1,15 @@
-enum { COLOR_WHITE, COLOR_RED };
+struct display_driver {
+	int  (*cols)(void);
+	int  (*rows)(void);
+	void (*put_cell)(int col, int row, char c, int color);
+	void (*set_cursor)(int col, int row);
+	int  (*backspace)(int current_row, int current_col);
+	void (*clear)(void);
+	void (*scroll)(void);
+};
 
-int  display_cols(void);
-int  display_rows(void);
-void display_put_cell(int col, int row, char c, int color);
-void display_set_cursor(int col, int row);
-void display_clear(void);
-void display_scroll(void);
-int display_backspace(int current_row, int current_col);
+extern struct display_driver *display;
+
+void register_display_driver(struct display_driver *driver);
+
+enum { COLOR_WHITE, COLOR_RED };
