@@ -26,21 +26,21 @@ static void fb_put_pixel(int x, int y, uint32_t color) {
 }
 
 void fb_put_cell(int col, int row, char c, int color) {
-    int start_x = col * FONT_WIDTH;
-    int start_y = row * FONT_HEIGHT;
+	int start_x = col * FONT_WIDTH;
+	int start_y = row * FONT_HEIGHT;
 
-    uint32_t fg_color = (color == COLOR_RED) ? 0x00FF0000 : 0x00FFFFFF;
-    uint32_t bg_color = 0x00000000;
+	uint32_t fg_color = (color == COLOR_RED) ? 0x00FF0000 : 0x00FFFFFF;
+	uint32_t bg_color = 0x00000000;
 
-    const uint8_t *glyph = psf_get_glyph((unsigned char)c);
+	const uint8_t *glyph = psf_get_glyph((unsigned char)c);
 
-    for (int y = 0; y < FONT_HEIGHT; y++) {
-        uint8_t bits = glyph[y];
-        for (int x = 0; x < FONT_WIDTH; x++) {
-            uint32_t px = (bits & (0x80 >> x)) ? fg_color : bg_color;
-            fb_put_pixel(start_x + x, start_y + y, px);
-        }
-    }
+	for (int y = 0; y < FONT_HEIGHT; y++) {
+		uint8_t bits = glyph[y];
+		for (int x = 0; x < FONT_WIDTH; x++) {
+			uint32_t px = (bits & (0x80 >> x)) ? fg_color : bg_color;
+			fb_put_pixel(start_x + x, start_y + y, px);
+		}
+	}
 }
 
 void fb_set_cursor(int col, int row) {
