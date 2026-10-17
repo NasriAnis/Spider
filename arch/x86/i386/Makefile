@@ -1,7 +1,11 @@
-C_SOURCES = $(wildcard ../../../kernel/*.c ../../../kernel/shell/*.c ../../../drivers/*/*.c ../../../lib/*.c ../*.c ./*.c ./cpu/*.c)
+C_SOURCES = $(wildcard ../../../kernel/*.c ../../../kernel/shell/*.c ../../../drivers/*/*.c ../../../lib/*.c ../*.c ./*.c ./cpu/*.c ../../../font/*.c)
 S_SOURCES = $(wildcard ./*.s ./cpu/*.s ./cpu/interrupts/*.s)
-HEADERS   = $(wildcard ../../../kernel/*.h ../../../kernel/shell/*.h ../../../drivers/*/*.h ../../../lib/*.h ../../init.h ../*.h ./*/*.h)
+
+HEADERS   = $(wildcard ../../../kernel/*.h ../../../kernel/shell/*.h ../../../drivers/*/*.h ../../../lib/*.h ../../init.h ../../../font/*.h ../*.h ./*/*.h)
+
 OBJS      = $(C_SOURCES:.c=.o) $(S_SOURCES:.s=.o)
+
+FONT_OBJECT = ../../../font/font_object.o
 
 TARGET    = ../../../build/Spider-IA-32
 ISO    = ../../../build/spider.iso
@@ -41,7 +45,7 @@ iso: $(TARGET)
 		$(ISODIR) -o $(ISO)
 	limine bios-install $(ISO)
 
-$(TARGET): $(OBJS)
+$(TARGET): $(OBJS) $(FONT_OBJECT)
 	@mkdir -p $(dir $@)
 	ld -m elf_i386 -T linker.ld -o $@ $^
 
@@ -51,6 +55,10 @@ $(TARGET): $(OBJS)
 %.o: %.s
 	$(AS) -o $@ $<
 
+$(FONT_OBJECT):
+	make -C ../../../font i386
+
 clean:
 	rm -f boot.o $(OBJS) $(TARGET) $(ISO)
 	rm -rf $(ISODIR)
+	make -C ../../..font clean
