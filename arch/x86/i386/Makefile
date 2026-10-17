@@ -61,4 +61,4 @@ $(FONT_OBJECT):
 clean:
 	rm -f boot.o $(OBJS) $(TARGET) $(ISO)
 	rm -rf $(ISODIR)
-	make -C ../../..font clean
+	make -C ../../../font clean
