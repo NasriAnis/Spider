@@ -10,13 +10,16 @@ static uint32_t fb_pitch = 0;
 
 #define FONT_WIDTH  8
 #define FONT_HEIGHT 16
-#define BG_COLOR 0x00000000
 
-int fb_cols(void) { 
+#define BG_COLOR 0x00000000
+#define RED 0x00FF0000
+#define WHITE 0x00FFFFFF
+
+int fb_cols(void) {
 	return fb_width / FONT_WIDTH;
 }
 
-int fb_rows(void) { 
+int fb_rows(void) {
 	return fb_height / FONT_HEIGHT;
 }
 
@@ -36,15 +39,14 @@ void fb_put_cell(int col, int row, char c, int color) {
 	int start_x = col * FONT_WIDTH;
 	int start_y = row * FONT_HEIGHT;
 
-	uint32_t fg_color = (color == COLOR_RED) ? 0x00FF0000 : 0x00FFFFFF;
-	uint32_t bg_color = 0x00000000;
+	uint32_t fg_color = (color == COLOR_RED) ? RED : WHITE;
 
 	const uint8_t *glyph = psf_get_glyph((unsigned char)c);
 
 	for (int y = 0; y < FONT_HEIGHT; y++) {
 		uint8_t bits = glyph[y];
 		for (int x = 0; x < FONT_WIDTH; x++) {
-			uint32_t px = (bits & (0x80 >> x)) ? fg_color : bg_color;
+			uint32_t px = (bits & (0x80 >> x)) ? fg_color : BG_COLOR;
 			fb_put_pixel(start_x + x, start_y + y, px);
 		}
 	}
