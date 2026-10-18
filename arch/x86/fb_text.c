@@ -112,6 +112,5 @@ void init_fb_driver(uintptr_t addr, uint32_t width, uint32_t height, uint32_t pi
 	fb_width = width;
 	fb_height = height;
 	fb_pitch = pitch;
-	psf_init(); // initialize the fonts
 	register_display_driver(&fb_driver);
 }
