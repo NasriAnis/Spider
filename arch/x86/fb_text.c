@@ -60,8 +60,20 @@ void fb_scroll(void) {
 	// Implement scrolling by copying row memory upwards
 }
 
+/*
+ * This function return 0 when a backspace only decremented a col
+ * and 1 when decrementing a row and col = MAX_COLS in case where
+ * it wraps arround.
+ */
 int fb_backspace(int current_row, int current_col) {
-	return current_col;
+	if (current_row-1 < 0){
+		fb_put_cell(current_col-1, current_row-1, ' ', COLOR_WHITE);
+		fb_set_cursor(current_col-1, current_row-1);
+		return 1;
+	}
+	fb_put_cell(current_col-1, current_row, ' ', COLOR_WHITE);
+	fb_set_cursor(current_col-1, current_row);
+	return 0;
 }
 
 static struct display_driver fb_driver = {
