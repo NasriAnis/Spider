@@ -9,6 +9,7 @@ static uint32_t fb_pitch = 0;
 
 #define FONT_WIDTH  8
 #define FONT_HEIGHT 16
+#define BG_COLOR 0x00000000
 
 int fb_cols(void) { 
 	return fb_width / FONT_WIDTH;
@@ -50,7 +51,7 @@ void fb_set_cursor(int col, int row) {
 void fb_clear(void) {
 	for (uint32_t y = 0; y < fb_height; y++) {
 		for (uint32_t x = 0; x < fb_width; x++) {
-			fb_put_pixel(x, y, 0x00000000);
+			fb_put_pixel(x, y, BG_COLOR);
 		}
 	}
 }
