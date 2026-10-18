@@ -1,5 +1,6 @@
 #include "../../drivers/video/display.h"
 #include "../../lib/int.h"
+#include "../../lib/mem.h"
 #include "../../font/font.h"
 
 static uintptr_t fb_addr = 0;
@@ -24,6 +25,11 @@ static void fb_put_pixel(int x, int y, uint32_t color) {
 
 	uint32_t *pixel_addr = (uint32_t *)(fb_addr + (y * fb_pitch) + (x * sizeof(uint32_t)));
 	*pixel_addr = color;
+}
+
+static uint32_t fb_get_pixel(int x, int y) {
+	uint32_t *pixel_addr = (uint32_t *)(fb_addr + (y * fb_pitch) + (x * sizeof(uint32_t)));
+	return *pixel_addr;
 }
 
 void fb_put_cell(int col, int row, char c, int color) {
@@ -56,8 +62,23 @@ void fb_clear(void) {
 	}
 }
 
+/*
+ * scroll by one row up
+ */
 void fb_scroll(void) {
-	// Implement scrolling by copying row memory upwards
+    uint8_t *fb = (uint8_t *)fb_addr;
+
+    uint32_t scroll_bytes = FONT_HEIGHT * fb_pitch;
+    uint32_t total_bytes  = fb_height * fb_pitch;
+
+    // Shift everything up
+    memmove(fb, fb + scroll_bytes, total_bytes - scroll_bytes);
+
+    // Clear the bottom strip
+    uint32_t *p = (uint32_t *)(fb + total_bytes - scroll_bytes);
+    for (uint32_t i = 0; i < (scroll_bytes / 4); i++) {
+        p[i] = BG_COLOR;
+    }
 }
 
 /*
