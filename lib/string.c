@@ -1,9 +1,3 @@
-void memcpy(char *source, char *dest, int nbytes) {
-	for (int i = 0; i < nbytes; i++) {
-		*(dest + i) = *(source + i);
-	}
-}
-
 int strlen(char s[]) {
 	int i = 0;
 	while (s[i] != '\0') ++i;
