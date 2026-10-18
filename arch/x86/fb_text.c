@@ -66,19 +66,19 @@ void fb_clear(void) {
  * scroll by one row up
  */
 void fb_scroll(void) {
-    uint8_t *fb = (uint8_t *)fb_addr;
+	uint8_t *fb = (uint8_t *)fb_addr;
 
-    uint32_t scroll_bytes = FONT_HEIGHT * fb_pitch;
-    uint32_t total_bytes  = fb_height * fb_pitch;
+	uint32_t scroll_bytes = FONT_HEIGHT * fb_pitch;
+	uint32_t total_bytes  = fb_height * fb_pitch;
 
-    // Shift everything up
-    memmove(fb, fb + scroll_bytes, total_bytes - scroll_bytes);
+	// Shift everything up
+	memmove(fb, fb + scroll_bytes, total_bytes - scroll_bytes);
 
-    // Clear the bottom strip
-    uint32_t *p = (uint32_t *)(fb + total_bytes - scroll_bytes);
-    for (uint32_t i = 0; i < (scroll_bytes / 4); i++) {
-        p[i] = BG_COLOR;
-    }
+	// Clear the bottom strip
+	uint32_t *p = (uint32_t *)(fb + total_bytes - scroll_bytes);
+	for (uint32_t i = 0; i < (scroll_bytes / 4); i++) {
+		p[i] = BG_COLOR;
+	}
 }
 
 /*
