@@ -21,7 +21,11 @@ LIMINE = /usr/share/limine
 all: $(TARGET)
 
 run: iso
-	qemu-system-i386 -no-reboot -d int,cpu_reset -cdrom $(ISO)
+	qemu-system-i386 -no-reboot \
+		-d int,cpu_reset \
+		-cpu pentium3 \
+		-m 512M \
+		-cdrom $(ISO)
 
 debug: $(TARGET)
 	qemu-system-i386 -s -S -no-reboot -cdrom $(ISO) &
