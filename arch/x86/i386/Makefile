@@ -1,9 +1,14 @@
-C_SOURCES = $(wildcard ../../../kernel/*.c ../../../kernel/shell/*.c ../../../drivers/*/*.c ../../../lib/*.c ../*.c ./*.c ./cpu/*.c ../../../font/*.c)
-S_SOURCES = $(wildcard ./*.s ./cpu/*.s ./cpu/interrupts/*.s)
+ROOT := ../../..
+SRC_DIRS := $(ROOT)/kernel $(ROOT)/drivers $(ROOT)/lib $(ROOT)/font
 
-HEADERS   = $(wildcard ../../../kernel/*.h ../../../kernel/shell/*.h ../../../drivers/*/*.h ../../../lib/*.h ../../init.h ../../../font/*.h ../*.h ./*/*.h)
+C_SOURCES := $(sort \
+    $(shell find $(SRC_DIRS) -name '*.c') \
+    $(wildcard ../*.c) \
+    $(shell find . -name '*.c'))
+S_SOURCES := $(sort $(shell find . -name '*.s'))
 
 OBJS      = $(C_SOURCES:.c=.o) $(S_SOURCES:.s=.o)
+DEPS = $(OBJS:.o=.d)
 
 FONT_OBJECT = ../../../font/font_object.o
 
@@ -13,10 +18,13 @@ ISODIR = ../../../build/isodir
 
 CC        = gcc
 CFLAGS    = -m32 -ffreestanding -Wall -Wextra -g \
-			-fno-pie -fno-stack-protector
+			-fno-pie -fno-stack-protector \
+			-MMD -MP
 AS        = as -g --32
 
 LIMINE = /usr/share/limine
+
+-include $(DEPS)
 
 all: $(TARGET)
 
@@ -53,7 +61,7 @@ $(TARGET): $(OBJS) $(FONT_OBJECT)
 	@mkdir -p $(dir $@)
 	ld -m elf_i386 -T linker.ld -o $@ $^
 
-%.o: %.c $(HEADERS)
+%.o: %.c
 	$(CC) $(CFLAGS) -o $@ -c $<
 
 %.o: %.s
@@ -63,6 +71,6 @@ $(FONT_OBJECT):
 	make -C ../../../font i386
 
 clean:
-	rm -f boot.o $(OBJS) $(TARGET) $(ISO)
+	rm -f boot.o $(OBJS) $(TARGET) $(ISO) $(DEPS)
 	rm -rf $(ISODIR)
 	make -C ../../../font clean
