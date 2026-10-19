@@ -20,4 +20,4 @@
 - [x] Setup a display driver abstraction
 
 # Note
-For now all Done TODOs are for the ia368 architeture. Expanding to amd64 and ARM will be considered later.
+For now all Done TODOs are for the i386 architeture. Expanding to amd64 and ARM will be considered later.
