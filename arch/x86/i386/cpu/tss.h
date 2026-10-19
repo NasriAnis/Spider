@@ -1,4 +1,4 @@
-#include "../../../lib/int.h"
+#include "../../../../lib/int.h"
 
 struct __attribute__((packed)) TssEntry {
 	uint32_t prev_tss; // The previous TSS

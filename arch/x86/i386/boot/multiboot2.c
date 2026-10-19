@@ -1,5 +1,5 @@
-#include "../../../lib/int.h"
-#include "../../../kernel/console.h"
+#include "../../../../lib/int.h"
+#include "../../../../kernel/console.h"
 #include "multiboot2.h"
 
 extern void kmain(void);

@@ -1,7 +1,7 @@
 #ifndef MULTIBOOT_HEADER
 #define MULTIBOOT_HEADER 1
 
-#include "../../../lib/int.h"
+#include "../../../../lib/int.h"
 
 #define MULTIBOOT2_BOOTLOADER_MAGIC  0x36d76289
 

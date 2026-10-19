@@ -1,5 +1,5 @@
 #include "../../arch.h"
-#include "gdt.h"
+#include "./cpu/gdt.h"
 #include "./cpu/idt.h"
 #include "../../../kernel/console.h"
 
