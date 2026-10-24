@@ -1,6 +1,7 @@
 #include "../../../../lib/int.h"
 #include "../../../../kernel/console.h"
 #include "multiboot2.h"
+#include "../../../../drivers/mem/pmm.h"
 
 extern void kmain(void);
 extern void init_vga_text_driver(void);
@@ -43,7 +44,7 @@ void multiboot2_check(uint32_t magic, uint32_t mbi_addr) {
 
 					// entry->type == 1 means standard available RAM
 					if (entry->type == MULTIBOOT_MEMORY_AVAILABLE) {
-						// Pass entry->addr and entry->len to physical memory manager (PMM)
+						available_mm_register(entry->addr, entry->len);
 					}
 				}
 				break;
