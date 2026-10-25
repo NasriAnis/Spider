@@ -1,9 +1,10 @@
 #include "./../../lib/int.h"
 #include "pmm.h"
 
-struct bitmap_loc get_bitmap_addr(uint32_t addr);
+struct bitmap_loc get_bitmap_addr(uintptr_t addr);
 void init_mm_tracking();
-void init_bitmap(uint64_t end_addr);
+void init_bitmap(uintptr_t end_addr);
+void fill_bitmap(uint64_t len, uintptr_t addr, uint8_t value);
 
 struct bitmap_loc {
 	uint32_t row;
@@ -23,7 +24,7 @@ uintptr_t pmm_free(){
 	return 0;
 }
 
-void fill_bitmap(uint64_t len, uint64_t addr, uint8_t value){
+void fill_bitmap(uint64_t len, uintptr_t addr, uint8_t value){
 	for (uint64_t current = addr; current < addr + len; current += PAGE_SIZE) {
 		struct bitmap_loc loc = get_bitmap_addr((uint32_t)current);
 
@@ -51,7 +52,7 @@ void pmm_init_regions(){
 	fill_bitmap(protected_len, _kernel_start, 1);
 }
 
-void available_mm_register(uint64_t addr, uint64_t len){
+void available_mm_register(uintptr_t addr, uint64_t len){
 	if (!mm_available_regions){
 		init_mm_tracking();
 	}
@@ -69,7 +70,7 @@ void available_mm_register(uint64_t addr, uint64_t len){
 }
 
 // NOTE: unaligned address to PAGE_SIZE doesnt get used there
-void init_bitmap(uint64_t end_addr){
+void init_bitmap(uintptr_t end_addr){
 	size_t tracking_size = sizeof(struct mm_available_regions) + 
 		(mm_available_regions->regions_number * sizeof(struct region));
 	pmm_bitmap = (struct pmm_bitmap *)((uint8_t *)mm_available_regions + tracking_size);
@@ -79,7 +80,7 @@ void init_bitmap(uint64_t end_addr){
 	}
 }
 
-struct bitmap_loc get_bitmap_addr(uint32_t addr){
+struct bitmap_loc get_bitmap_addr(uintptr_t addr){
 	uint32_t frame_index = addr / PAGE_SIZE;
 	struct bitmap_loc bitmap_loc = {
 		.row = frame_index / BITS_PER_BITMAP_ROW,
