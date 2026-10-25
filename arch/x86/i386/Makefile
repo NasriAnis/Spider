@@ -29,14 +29,14 @@ LIMINE = /usr/share/limine
 all: $(TARGET)
 
 run: iso
-	qemu-system-i386 -no-reboot \
+	qemu-system-i386 -no-reboot -no-shutdown \
 		-d int,cpu_reset \
 		-cpu pentium3 \
 		-m 512M \
 		-cdrom $(ISO)
 
 debug: $(TARGET)
-	qemu-system-i386 -s -S -no-reboot -cdrom $(ISO) &
+	qemu-system-i386 -s -S -no-reboot -cdrom $(ISO) -d int,cpu_reset -no-shutdown -D qemu.log &
 	gdb -ex "set disassembly-flavor intel" \
 		-ex "target remote localhost:1234" \
 		-ex "set architecture i386" \
