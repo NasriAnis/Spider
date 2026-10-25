@@ -29,9 +29,9 @@ void fill_bitmap(uint64_t len, uintptr_t addr, uint8_t value){
 		struct bitmap_loc loc = get_bitmap_addr((uint32_t)current);
 
 		if (value == 0) {
-			pmm_bitmap->data[loc.row] &= ~(1 << loc.col);
+			pmm_bitmap->data[loc.row] &= ~(1u << loc.col);
 		} else {
-			pmm_bitmap->data[loc.row] |= (1 << loc.col);
+			pmm_bitmap->data[loc.row] |= (1u << loc.col);
 		}
 	}
 }
