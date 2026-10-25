@@ -19,9 +19,8 @@ struct mm_available_regions {
 #define BITS_PER_BITMAP_ROW 8
 #define PAGE_SIZE 4096
 
-// Not woking yet
-uintptr_t pmm_free();
-uintptr_t pmm_alloc();
+uintptr_t pmm_alloc(uint32_t size);
+void pmm_free(uintptr_t pointer, uint64_t size);
 
 void available_mm_register(uintptr_t addr, uint64_t len);
 void pmm_init_regions();
