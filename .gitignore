@@ -1,4 +1,5 @@
 *.o
 *.d
+*.log
 build
 tmp/
