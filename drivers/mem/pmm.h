@@ -23,5 +23,5 @@ struct mm_available_regions {
 uintptr_t pmm_free();
 uintptr_t pmm_alloc();
 
-void available_mm_register(uint64_t addr, uint64_t len);
+void available_mm_register(uintptr_t addr, uint64_t len);
 void pmm_init_regions();
