@@ -47,9 +47,7 @@ void pmm_init_regions(){
 
 	pmm_bitmap->max_rows = max_rows;
 
-	uint64_t pmm_end_addr = (uint64_t)(uintptr_t)pmm_bitmap->data + max_rows + 1;
-	uint64_t protected_len = pmm_end_addr - _kernel_start;
-	fill_bitmap(protected_len, _kernel_start, 1);
+	fill_bitmap(PAGE_SIZE, 0, 1);
 }
 
 void available_mm_register(uintptr_t addr, uint64_t len){
