@@ -88,4 +88,5 @@ struct bitmap_loc get_bitmap_addr(uint32_t addr){
 void init_mm_tracking(){
     mm_available_regions = (struct mm_available_regions *)&_kernel_end;
     mm_available_regions->regions_number = 0;
+	mm_available_regions->highest_address = 0;
 }
