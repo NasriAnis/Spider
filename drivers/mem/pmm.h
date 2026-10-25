@@ -2,8 +2,7 @@
 
 struct pmm_bitmap {
 	uint8_t *data;
-	uint32_t page_size;
-	uint32_t bits_per_row;
+	uint32_t max_rows;
 };
 
 struct region {

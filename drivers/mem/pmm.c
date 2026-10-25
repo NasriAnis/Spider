@@ -42,8 +42,11 @@ void pmm_init_regions(){
 		fill_bitmap(mm_available_regions->region[i].len,
 			  mm_available_regions->region[i].addr, 0);
 	}
-	uint32_t max_row = get_bitmap_addr((uint32_t)mm_available_regions->highest_address).row;
-	uint64_t pmm_end_addr = (uint64_t)(uintptr_t)pmm_bitmap->data + max_row + 1;
+	uint32_t max_rows = get_bitmap_addr((uint32_t)mm_available_regions->highest_address).row;
+
+	pmm_bitmap->max_rows = max_rows;
+
+	uint64_t pmm_end_addr = (uint64_t)(uintptr_t)pmm_bitmap->data + max_rows + 1;
 	uint64_t protected_len = pmm_end_addr - _kernel_start;
 	fill_bitmap(protected_len, _kernel_start, 1);
 }
