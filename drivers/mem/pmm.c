@@ -12,6 +12,7 @@ struct bitmap_loc {
 
 struct mm_available_regions *mm_available_regions;
 struct pmm_bitmap *pmm_bitmap;
+extern uint32_t _kernel_start;
 extern uint32_t _kernel_end;
 
 uintptr_t pmm_alloc(){
@@ -41,6 +42,10 @@ void pmm_init_regions(){
 		fill_bitmap(mm_available_regions->region[i].len,
 			  mm_available_regions->region[i].addr, 0);
 	}
+	uint32_t max_row = get_bitmap_addr((uint32_t)mm_available_regions->highest_address).row;
+	uint64_t pmm_end_addr = (uint64_t)(uintptr_t)pmm_bitmap->data + max_row + 1;
+	uint64_t protected_len = pmm_end_addr - _kernel_start;
+	fill_bitmap(protected_len, _kernel_start, 1);
 }
 
 void available_mm_register(uint64_t addr, uint64_t len){
