@@ -1,4 +1,4 @@
-#include "./../../lib/int.h"
+#include <int.h>
 
 struct pmm_bitmap {
 	uint8_t *data;

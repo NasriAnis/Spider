@@ -1,7 +1,7 @@
-#include "../../../../lib/int.h"
-#include "../../../../kernel/console.h"
+#include <int.h>
+#include <io.h>
 #include "multiboot2.h"
-#include "../../../../drivers/mem/pmm.h"
+#include <drivers/mem/pmm.h>
 
 extern void init_vga_text_driver(void);
 extern void init_fb_driver(uintptr_t addr, uint32_t width, uint32_t height, uint32_t pitch);

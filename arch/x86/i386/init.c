@@ -1,7 +1,7 @@
-#include "../../arch.h"
-#include "./cpu/gdt.h"
-#include "./cpu/idt.h"
-#include "../../../kernel/console.h"
+#include <arch.h>
+#include <io.h>
+#include "cpu/gdt.h"
+#include "cpu/idt.h"
 
 void init_arch(void){
 	init_idt();

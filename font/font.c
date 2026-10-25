@@ -1,4 +1,4 @@
-#include "../lib/int.h"
+#include <int.h>
 #include "font.h"
 
 extern char _binary_default8x16_psfu_start;

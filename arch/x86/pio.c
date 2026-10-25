@@ -1,3 +1,5 @@
+#include <pio.h>
+
 /**
  * Read a byte from a specified port
  */

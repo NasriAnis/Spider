@@ -1,5 +1,5 @@
-#include "console.h"
-#include "../drivers/video/display.h"
+#include <io.h>
+#include <drivers/video/display.h>
 
 static int cur_col = 0;
 static int cur_row = 0;

@@ -19,6 +19,7 @@ ISODIR = ../../../build/isodir
 CC        = gcc
 CFLAGS    = -m32 -ffreestanding -Wall -Wextra -g \
 			-fno-pie -fno-stack-protector \
+			-I$(ROOT) -I$(ROOT)/lib -I$(ROOT)/drivers -I$(ROOT)/arch/include -I$(ROOT)/arch/x86/include\
 			-MMD -MP
 AS        = as -g --32
 

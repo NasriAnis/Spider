@@ -1,5 +1,5 @@
-#include "pio.h"
-#include "../../drivers/io/keyboard.h"
+#include <pio.h>
+#include <drivers/io/keyboard.h>
 
 #define PS2_STATUS_PORT 0x64
 #define PS2_DATA_PORT   0x60

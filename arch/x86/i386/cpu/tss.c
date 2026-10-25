@@ -1,4 +1,4 @@
-#include "../../../../lib/mem.h"
+#include <mem.h>
 
 #include "gdt.h"
 #include "tss.h"

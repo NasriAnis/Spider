@@ -1,7 +1,7 @@
-#include "../../drivers/video/display.h"
-#include "../../lib/int.h"
-#include "../../lib/mem.h"
-#include "../../font/font.h"
+#include <drivers/video/display.h>
+#include <int.h>
+#include <mem.h>
+#include <font/font.h>
 
 static uintptr_t fb_addr = 0;
 static uint32_t fb_width = 0;

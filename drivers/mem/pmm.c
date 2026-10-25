@@ -1,4 +1,4 @@
-#include "./../../lib/int.h"
+#include <int.h>
 #include "pmm.h"
 
 struct bitmap_loc get_bitmap_addr(uintptr_t addr);

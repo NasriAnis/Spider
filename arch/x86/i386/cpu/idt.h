@@ -1,4 +1,4 @@
-#include "../../../../lib/int.h"
+#include <int.h>
 
 struct InterruptDescriptorEntry {
 	uint16_t offset_1;        // offset bits 0..15

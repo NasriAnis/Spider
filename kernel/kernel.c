@@ -1,8 +1,8 @@
-#include "console.h"
-#include "../arch/arch.h"
-#include "../lib/int.h"
+#include <io.h>
+#include <arch.h>
+#include <int.h>
 #include "shell/shell.h"
-#include "../drivers/init.h"
+#include <drivers/init.h>
 
 void kmain(void){
 	clear_screen();

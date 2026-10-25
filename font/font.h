@@ -1,4 +1,4 @@
-#include "../lib/int.h"
+#include <int.h>
 
 #define PSF1_FONT_MAGIC 0x0436
 

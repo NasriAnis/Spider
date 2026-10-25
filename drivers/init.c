@@ -1,5 +1,5 @@
 #include "mem/pmm.h"
-#include "../kernel/console.h"
+#include <io.h>
 
 void init_kernel_utilities(){
 	pmm_init_regions();

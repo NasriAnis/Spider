@@ -1,5 +1,5 @@
 #include "commands.h"
-#include "../console.h"
+#include <io.h>
 
 void cmd_clear(int argc, char **argv) {
 	(void)argc; (void)argv;

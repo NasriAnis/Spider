@@ -1,7 +1,7 @@
 #include "isr.h"
 #include "idt.h"
-#include "../../../../lib/int.h"
-#include "../../../../kernel/console.h"
+#include <int.h>
+#include <io.h>
 
 extern void isr0(void);
 extern void isr1(void);

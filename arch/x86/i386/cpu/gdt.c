@@ -1,4 +1,4 @@
-#include "../../../../kernel/console.h"
+#include <io.h>
 #include "gdt.h"
 #include "tss.h"
 

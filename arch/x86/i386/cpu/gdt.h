@@ -1,4 +1,4 @@
-#include "../../../../lib/int.h"
+#include <int.h>
 
 struct GlobalDescriptorTableEntry {
 	uint32_t SegmentBase;

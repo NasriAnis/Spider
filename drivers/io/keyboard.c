@@ -1,6 +1,6 @@
-#include "../../kernel/console.h"
-#include "../../arch/x86/pio.h"
-#include "../../lib/string.h"
+#include <io.h>
+#include <pio.h>
+#include <string.h>
 #include "keyboard.h"
 
 unsigned char keyboard_map[128] = {

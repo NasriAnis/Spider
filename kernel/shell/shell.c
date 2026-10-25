@@ -1,7 +1,7 @@
-#include "../../lib/int.h"
-#include "../console.h"
-#include "../../drivers/io/keyboard.h"
-#include "../../lib/string.h"
+#include <int.h>
+#include <io.h>
+#include <drivers/io/keyboard.h>
+#include <string.h>
 #include "commands.h"
 
 void kernel_shell_run(void) {

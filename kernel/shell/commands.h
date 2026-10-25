@@ -1,4 +1,4 @@
-#include "../../lib/int.h"
+#include <int.h>
 
 struct command {
 	const char *name;
