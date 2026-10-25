@@ -10,7 +10,7 @@ struct bitmap_loc {
 	uint32_t col;
 };
 
-struct mm_available_regions *mm_available_regions;
+struct mm_available_regions *mm_available_regions = 0;
 struct pmm_bitmap *pmm_bitmap;
 extern uint32_t _kernel_start;
 extern uint32_t _kernel_end;
