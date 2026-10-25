@@ -6,7 +6,7 @@ struct pmm_bitmap {
 };
 
 struct region {
-	uint64_t addr;
+	uintptr_t addr;
 	uint64_t len;
 };
 
