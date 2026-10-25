@@ -63,8 +63,7 @@ void pmm_init_regions(){
 	init_bitmap(mm_available_regions->highest_address);
 	uint32_t entries = mm_available_regions->regions_number;
 	for (int i = 0; i<entries; i++) {
-		fill_bitmap(mm_available_regions->region[i].len,
-			  mm_available_regions->region[i].addr, 0);
+		fill_bitmap(mm_available_regions->region[i].len, mm_available_regions->region[i].addr, 0);
 	}
 	pmm_bitmap->max_rows =
 		get_bitmap_addr((uintptr_t)mm_available_regions->highest_address).row + 1;
@@ -123,7 +122,7 @@ uint32_t get_pmm_bit(uint32_t row, uint32_t col){
 
 
 void init_mm_tracking(){
-    mm_available_regions = (struct mm_available_regions *)&_kernel_end;
-    mm_available_regions->regions_number = 0;
+	mm_available_regions = (struct mm_available_regions *)&_kernel_end;
+	mm_available_regions->regions_number = 0;
 	mm_available_regions->highest_address = 0;
 }

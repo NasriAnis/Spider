@@ -7,5 +7,5 @@ SECTIONS
 	.rodata    : { *(.rodata) }
 	.data      : { *(.data) }
 	.bss       : { *(.bss) *(COMMON) }
-    _kernel_end = .;
+	_kernel_end = .;
 }
