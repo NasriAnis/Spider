@@ -3,14 +3,16 @@
 #include <int.h>
 #include <shell/shell.h>
 #include <drivers/init.h>
+#include <drivers/mem/pmm.h>
+#include <kernel/console.h>
 
 void kmain(void){
-	clear_screen();
+	cls();
 
 	init_arch();
 	init_kernel_utilities();
 
-	printnl("\nWelcome to the Spider Os !\n");
+	putsnl("\nWelcome to the Spider Os !\n");
 
 	kernel_shell_run();
 

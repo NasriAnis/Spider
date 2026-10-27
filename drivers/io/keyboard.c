@@ -1,5 +1,6 @@
 #include <io.h>
 #include <pio.h>
+#include <kernel/console.h>
 #include <string.h>
 #include "keyboard.h"
 
@@ -73,7 +74,7 @@ void readline(char *line, size_t max) {
 		char c = getchar();
 
 		if (c == '\n') {
-			print("\n");
+			puts("\n");
 			line[len] = '\0';
 			return;
 		}
@@ -89,7 +90,7 @@ void readline(char *line, size_t max) {
 		if (len < max - 1) { /* Add null terminator */
 			line[len++] = c;
 			char s[2] = { c, '\0' };
-			print(s);
+			puts(s);
 		}
 		/* if the line is full, extra chars are silently ignored */
 	}

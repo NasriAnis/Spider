@@ -114,8 +114,8 @@ char *exception_messages[] = {
 };
 
 void cpu_interrupts_handler(int i) {
-	eprint("[x] Interrupt occured : ");
-	eprintnl(exception_messages[i]);
+	eputs("[x] Interrupt occured : ");
+	eputsnl(exception_messages[i]);
 	asm("cli");
 	asm("hlt");
 }

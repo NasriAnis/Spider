@@ -4,7 +4,7 @@
 static int cur_col = 0;
 static int cur_row = 0;
 
-static void put_char(char c, int color) {
+static void putcc(char c, int color) {
 	if (c == '\n') {
 		cur_col = 0;
 		cur_row++;
@@ -21,8 +21,8 @@ static void put_char(char c, int color) {
 	display->set_cursor(cur_col, cur_row);
 }
 
-static void put_string(char *s, int color) {
-	for (int i = 0; s[i]; i++) put_char(s[i], color);
+static void putsc(char *s, int color) {
+	for (int i = 0; s[i]; i++) putcc(s[i], color);
 }
 
 void backspace(){
@@ -35,12 +35,12 @@ void backspace(){
 	}
 }
 
-void print(char *m)     { put_string(m, COLOR_WHITE); }
-void eprint(char *m)    { put_string(m, COLOR_RED); }
-void printnl(char *m)   { print(m);  put_char('\n', COLOR_WHITE); }
-void eprintnl(char *m)  { eprint(m); put_char('\n', COLOR_RED); }
+void puts(char *m)     { putsc(m, COLOR_WHITE); }
+void eputs(char *m)    { putsc(m, COLOR_RED); }
+void putsnl(char *m)   { puts(m);  putcc('\n', COLOR_WHITE); }
+void eputsnl(char *m)  { eputs(m); putcc('\n', COLOR_RED); }
 
-void clear_screen(void) {
+void cls(void) {
 	display->clear();
 	cur_col = 0;
 	cur_row = 0;

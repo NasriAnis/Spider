@@ -5,7 +5,7 @@
 
 void init_arch(void){
 	init_idt();
-	printnl("[/] Init IDT tables and interrupts succesfully");
+	putsnl("[/] Init IDT tables and interrupts succesfully");
 	init_gdt();
-	printnl("[/] Init GDT tables succesfully");
+	putsnl("[/] Init GDT tables succesfully");
 }

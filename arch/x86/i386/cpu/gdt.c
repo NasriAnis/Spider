@@ -76,7 +76,7 @@ void load_gdt(struct GDTR *gdtr){
 void encode_gdt_entry(uint8_t *target, struct GlobalDescriptorTableEntry source){
 	if (source.SegmentLimit > 0xFFFFF) {
 		// [FIX] make a kernel error handler
-		eprintnl("GDT cannot encode limits larger than 0xFFFFF");
+		eputsnl("GDT cannot encode limits larger than 0xFFFFF");
 		asm( "hlt" );
 	};
 

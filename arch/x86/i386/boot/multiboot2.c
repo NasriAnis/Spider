@@ -12,13 +12,13 @@ static int using_framebuffer = 0;
 
 void multiboot2_check(uint32_t magic, uint32_t mbi_addr) {
 	if (magic != MB2_BOOT_MAGIC) {
-		eprintnl("Not booted by a Multiboot2 loader");
+		eputsnl("Not booted by a Multiboot2 loader");
 		asm volatile("cli; hlt");
 	}
 
 	// Verify alignment (Multiboot2 requires 8-byte alignment)
 	if (mbi_addr & 7) {
-		eprintnl("Unaligned Multiboot2 info pointer!");
+		eputsnl("Unaligned Multiboot2 info pointer!");
 		return;
 	}
 

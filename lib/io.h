@@ -1,6 +1,4 @@
-void print(char *message);
-void printnl(char *message);
-void eprint(char *message);
-void eprintnl(char *message);
-void clear_screen(void);
-void backspace();
+void puts(char *message);
+void putsnl(char *message);
+void eputs(char *message);
+void eputsnl(char *message);

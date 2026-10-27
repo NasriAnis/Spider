@@ -1,5 +1,5 @@
 ROOT := ../../..
-SRC_DIRS := $(ROOT)/kernel $(ROOT)/drivers $(ROOT)/lib $(ROOT)/font
+SRC_DIRS := $(ROOT)/kernel $(ROOT)/drivers $(ROOT)/lib $(ROOT)/font $(ROOT)/shell
 
 C_SOURCES := $(sort \
     $(shell find $(SRC_DIRS) -name '*.c') \
@@ -19,7 +19,7 @@ ISODIR = ../../../build/isodir
 CC        = gcc
 CFLAGS    = -m32 -ffreestanding -Wall -Wextra -g \
 			-fno-pie -fno-stack-protector \
-			-I$(ROOT) -I$(ROOT)/lib -I$(ROOT)/drivers -I$(ROOT)/arch/include -I$(ROOT)/arch/x86/include\
+			-I$(ROOT) -I$(ROOT)/lib -I$(ROOT)/drivers -I$(ROOT)/arch/include -I$(ROOT)/arch/x86/include -I$(ROOT)/shell \
 			-MMD -MP
 AS        = as -g --32
 

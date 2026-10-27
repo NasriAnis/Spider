@@ -2,7 +2,6 @@
 - [ ] Abstraction from PMM with malloc
 - [ ] Processes abstraction
 - [ ] Setup Paging
-- [ ] Setup a filesystem
 - [ ] Implement a Kerror handler function
 - [ ] Implement User space
 - [ ] Expend to amd64 architecture
@@ -10,6 +9,7 @@
 
 # In progress
 - [ ] PMM Memory allocator
+- [ ] Setup a filesystem
 
 # Done
 - [x] Setup linear framebuffer text printing abstraction
