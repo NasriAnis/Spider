@@ -36,7 +36,7 @@ run: iso
 		-m 512M \
 		-cdrom $(ISO)
 
-debug: $(TARGET)
+debug: iso
 	qemu-system-i386 -s -S -no-reboot -cdrom $(ISO) -d int,cpu_reset -no-shutdown -D qemu.log &
 	gdb -ex "set disassembly-flavor intel" \
 		-ex "target remote localhost:1234" \
