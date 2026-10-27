@@ -1,18 +1,19 @@
 #include "commands.h"
 #include <io.h>
+#include <kernel/console.h>
 
 void cmd_clear(int argc, char **argv) {
 	(void)argc; (void)argv;
-	clear_screen();
+	cls();
 }
 
 void cmd_echo(int argc, char **argv) {
 	(void)argv;
 	for (int i = 1; i < argc; i++) {
-		print(argv[i]);
-		print(" ");
+		puts(argv[i]);
+		puts(" ");
 	}
-	print("\n");
+	puts("\n");
 }
 
 const struct command commands[] = {

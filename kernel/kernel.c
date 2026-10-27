@@ -1,7 +1,7 @@
 #include <io.h>
 #include <arch.h>
 #include <int.h>
-#include "shell/shell.h"
+#include <shell/shell.h>
 #include <drivers/init.h>
 
 void kmain(void){
