@@ -1,7 +1,4 @@
 # TODO
-- [ ] Abstraction from PMM with malloc
-- [ ] Processes abstraction
-- [ ] Setup Paging
 - [ ] Implement a Kerror handler function
 - [ ] Implement User space
 - [ ] Expend to amd64 architecture
@@ -9,6 +6,11 @@
 
 # In progress
 - [ ] Setup a filesystem
+
+# On Hold
+- [ ] Abstraction from PMM with malloc
+- [ ] Processes abstraction
+- [ ] Setup Paging
 
 # Done
 - [x] Setup linear framebuffer text printing abstraction
