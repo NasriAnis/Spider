@@ -8,7 +8,6 @@
 - [ ] Expend to ARM architecture
 
 # In progress
-- [ ] PMM Memory allocator
 - [ ] Setup a filesystem
 
 # Done
@@ -18,6 +17,7 @@
 - [x] Setup interupts for CPU
 - [x] Setup a keyboard driver and interrupt handler
 - [x] Setup a display driver abstraction
+- [x] PMM Memory allocator
 
 # Note
 For now all Done TODOs are for the i386 architeture. Expanding to amd64 and ARM will be considered later.
