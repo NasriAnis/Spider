@@ -1,4 +1,4 @@
-ARCH ?=
+ARCH ?= amd64
 
 .PHONY: all deps run iso debug clean
 

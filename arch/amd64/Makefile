@@ -1,26 +1,29 @@
-ROOT := ../../..
+ROOT := ../..
 SRC_DIRS := $(ROOT)/kernel $(ROOT)/drivers $(ROOT)/lib $(ROOT)/font $(ROOT)/shell
 
 C_SOURCES := $(sort \
     $(shell find $(SRC_DIRS) -name '*.c') \
     $(wildcard ../*.c) \
     $(shell find . -name '*.c'))
-S_SOURCES := $(sort $(shell find . -name '*.s'))
+S_SOURCES := $(sort \
+    $(shell find $(SRC_DIRS) -name '*.s') \
+    $(wildcard ../*/*.s) $(wildcard ../*.s) \
+    $(shell find . -name '*.s'))
 
 OBJS      = $(C_SOURCES:.c=.o) $(S_SOURCES:.s=.o)
 DEPS = $(OBJS:.o=.d)
 
-FONT_OBJECT = ../../../font/font_object.o
+FONT_OBJECT = $(ROOT)/font/font_object.o
 
-TARGET    = ../../../build/Spider-x86_64
-ISO    = ../../../build/spider.iso
-ISODIR = ../../../build/isodir
+TARGET    = $(ROOT)/build/Spider-x86_64
+ISO    = $(ROOT)/build/spider.iso
+ISODIR = $(ROOT)/build/isodir
 
 CC        = gcc
 CFLAGS    = -m64 -march=x86-64 -ffreestanding -Wall -Wextra -g \
 			-fno-pie -fno-pic -fno-stack-protector \
 			-I$(ROOT) -I$(ROOT)/lib -I$(ROOT)/drivers -I$(ROOT)/arch/include \
-		 	-I$(ROOT)/arch/x86/include -I$(ROOT)/shell -I$(ROOT)/deps \
+		 	-I$(ROOT)/arch/amd64/include -I$(ROOT)/shell -I$(ROOT)/deps \
 			-MMD -MP -mcmodel=kernel -mno-red-zone
 AS        = as -g --64
 
@@ -71,9 +74,9 @@ $(TARGET): $(OBJS) $(FONT_OBJECT)
 	$(AS) -o $@ $<
 
 $(FONT_OBJECT):
-	make -C ../../../font x86_64
+	make -C $(ROOT)/font x86_64
 
 clean:
 	rm -f boot.o $(OBJS) $(TARGET) $(ISO) $(DEPS)
 	rm -rf $(ISODIR)
-	make -C ../../../font clean
+	make -C $(ROOT)/font clean

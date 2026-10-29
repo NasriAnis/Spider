@@ -4,22 +4,60 @@
 .text
 
 isr_common_handler_stub:
-	pop eax
-	pusha
-	push eax
+	# Save all 64-bit general-purpose registers
+	push rax
+	push rbx
+	push rcx
+	push rdx
+	push rsi
+	push rdi
+	push rbp
+	push r8
+	push r9
+	push r10
+	push r11
+	push r12
+	push r13
+	push r14
+	push r15
+
+	# System V ABI: Pass pointer to saved registers structure as 1st argument (RDI)
+	mov rdi, rsp
 	call cpu_interrupts_handler
-	pop eax
-	mov al, 0x20          # (EOI)
+
+	# Restore general-purpose registers
+	pop r15
+	pop r14
+	pop r13
+	pop r12
+	pop r11
+	pop r10
+	pop r9
+	pop r8
+	pop rbp
+	pop rdi
+	pop rsi
+	pop rdx
+	pop rcx
+	pop rbx
+	pop rax
+
+	# Send EOI to Master PIC (Port 0x20)
+	mov al, 0x20
 	out 0x20, al
-	popa
-	iret
+
+	# Clean up vector number and error code (2 * 8 bytes = 16 bytes)
+	add rsp, 16
+
+	# Return from 64-bit interrupt
+	iretq
 
 .macro ISR_NOERRCODE num
 .global isr\num
 isr\num:
 	cli
-	push 0                # GNU as handles push constants directly
-	push \num
+	push 0                 # Dummy error code
+	push \num              # Interrupt vector number
 	jmp isr_common_handler_stub
 .endm
 
@@ -27,7 +65,8 @@ isr\num:
 .global isr\num
 isr\num:
 	cli
-	push \num
+	# CPU automatically pushed the error code onto stack
+	push \num              # Interrupt vector number
 	jmp isr_common_handler_stub
 .endm
 

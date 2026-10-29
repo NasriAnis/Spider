@@ -2,21 +2,24 @@
 #include <int.h>
 #include <io.h>
 
-void load_gdt(struct GDTR *gdtr){
-	asm(
-		"lgdt (%0)" :: "r" (gdtr)
-	);
+void load_gdt(struct GDTR *gdtr) {
 	asm volatile(
-		"mov $0x10, %%ax\n"
-		"mov %%ax, %%ds\n"
-		"mov %%ax, %%es\n"
-		"mov %%ax, %%fs\n"
-		"mov %%ax, %%gs\n"
-		"mov %%ax, %%ss\n"
-		"ljmp $0x08, $1f\n"
-		"1:\n"
-		: : : "ax", "memory"
-	);
+		"lgdt (%0)\n\t"
+		"mov $0x10, %%ax\n\t"
+		"mov %%ax, %%ds\n\t"
+		"mov %%ax, %%es\n\t"
+		"mov %%ax, %%fs\n\t"
+		"mov %%ax, %%gs\n\t"
+		"mov %%ax, %%ss\n\t"
+		"pushq $0x08\n\t"
+		"leaq 1f(%%rip), %%rax\n\t"
+		"pushq %%rax\n\t"
+		"lretq\n\t"
+		"1:\n\t"
+		:
+		: "r" (gdtr)
+		: "rax", "memory"
+		);
 }
 
 void encode_gdt_entry(uint8_t *target, struct GlobalDescriptorTableEntry source){
