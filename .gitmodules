@@ -2,3 +2,6 @@
 	path = deps/limine
 	url = https://github.com/limine-bootloader/limine.git
 	branch = v11.x-binary
+[submodule "deps/limine-protocol"]
+	path = deps/limine-protocol
+	url = https://github.com/Limine-Bootloader/limine-protocol.git
