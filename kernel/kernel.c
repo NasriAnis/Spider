@@ -6,9 +6,9 @@
 #include <drivers/mem/pmm.h>
 #include <kernel/console.h>
 
-void kmain(void){
-	cls();
+KernelState kernel_state = {0};
 
+void kmain(void){
 	init_arch();
 	init_kernel_utilities();
 
