@@ -4,5 +4,8 @@ FONT_OBJECT = font_object.o
 i386:
 	objcopy -O elf32-i386 -B i386 -I binary $(FONT) $(FONT_OBJECT)
 
+x86_64:
+	objcopy -O elf64-x86-64 -I binary $(FONT) $(FONT_OBJECT)
+
 clean:
 	rm $(FONT_OBJECT)
