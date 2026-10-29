@@ -1,7 +1,7 @@
 #include <arch.h>
 #include <io.h>
-#include "cpu/gdt.h"
-#include "cpu/idt.h"
+#include <gdt.h>
+#include <idt.h>
 
 void init_arch(void){
 	init_idt();

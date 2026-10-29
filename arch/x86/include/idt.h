@@ -15,6 +15,9 @@ struct IDTR {
 
 #define IDT_ENTRIES 0x22
 
+extern struct InterruptDescriptorEntry IDT[IDT_ENTRIES];
+extern struct IDTR idtr;
+
 void init_idt();
 void load_idt();
 void pic_setup_icw();

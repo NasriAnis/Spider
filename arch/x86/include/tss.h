@@ -31,6 +31,8 @@ struct __attribute__((packed)) TssEntry {
 	uint16_t iomap_base;
 };
 
+static struct TssEntry tss_entry;
+
 /*
  * Fill the GDT entry for the TSS as well as the TssEntry
  * with the Code and Data segment of the kernel

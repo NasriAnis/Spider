@@ -1,9 +1,6 @@
 #include <mem.h>
-
-#include "gdt.h"
-#include "tss.h"
-
-static struct TssEntry tss_entry;
+#include <gdt.h>
+#include <tss.h>
 
 void init_tss(struct GlobalDescriptorTableEntry *gdt_entry){
 	uint32_t tss_base = (uint32_t)&tss_entry;
@@ -18,13 +15,4 @@ void init_tss(struct GlobalDescriptorTableEntry *gdt_entry){
 
 	tss_entry.ss0  = KERNEL_DATA_SEGMENT;
 	tss_entry.esp0 = KERNEL_CODE_SEGMENT;
-}
-
-void set_kernel_stack(uint32_t stack) { // Used when an interrupt occurs
-	tss_entry.esp0 = stack;
-}
-
-void load_task_register(){
-	asm("mov $(5 * 8), %ax");
-	asm("ltr %ax");
 }

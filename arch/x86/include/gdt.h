@@ -34,3 +34,6 @@ struct __attribute__((packed)) GDTR {
 	* # TSS descriptor
 */
 void init_gdt(void);
+
+void encode_gdt_entry(uint8_t *target, struct GlobalDescriptorTableEntry source);
+void load_gdt(struct GDTR *gdtr);

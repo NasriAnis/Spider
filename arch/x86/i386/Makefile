@@ -5,7 +5,10 @@ C_SOURCES := $(sort \
     $(shell find $(SRC_DIRS) -name '*.c') \
     $(wildcard ../*.c) \
     $(shell find . -name '*.c'))
-S_SOURCES := $(sort $(shell find . -name '*.s'))
+S_SOURCES := $(sort \
+    $(shell find $(SRC_DIRS) -name '*.s') \
+    $(wildcard ../*/*.s) $(wildcard ../*.s) \
+    $(shell find . -name '*.s'))
 
 OBJS      = $(C_SOURCES:.c=.o) $(S_SOURCES:.s=.o)
 DEPS = $(OBJS:.o=.d)
