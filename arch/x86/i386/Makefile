@@ -23,7 +23,8 @@ CFLAGS    = -m32 -ffreestanding -Wall -Wextra -g \
 			-MMD -MP
 AS        = as -g --32
 
-LIMINE = /usr/share/limine
+LIMINE = $(ROOT)/deps/limine
+LIMINE_BIN = $(LIMINE)/limine
 
 -include $(DEPS)
 
@@ -44,7 +45,7 @@ debug: iso
 		-ex "symbol-file $(TARGET)" \
 		-ex "break kmain"
 
-iso: $(TARGET)
+iso: $(TARGET) $(LIMINE_BIN)
 	rm -rf $(ISODIR)
 	mkdir -p $(ISODIR)/boot/limine $(ISODIR)/EFI/BOOT
 	cp $(TARGET) $(ISODIR)/boot/spider.elf
@@ -56,7 +57,7 @@ iso: $(TARGET)
 		-apm-block-size 2048 --efi-boot boot/limine/limine-uefi-cd.bin \
 		-efi-boot-part --efi-boot-image --protective-msdos-label \
 		$(ISODIR) -o $(ISO)
-	limine bios-install $(ISO)
+	$(LIMINE_BIN) bios-install $(ISO)
 
 $(TARGET): $(OBJS) $(FONT_OBJECT)
 	@mkdir -p $(dir $@)

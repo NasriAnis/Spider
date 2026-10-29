@@ -1,7 +1,12 @@
 ARCH ?=
 
-all:
+.PHONY: all deps run iso debug clean
+
+all: deps
 	make -C arch/$(ARCH)
+
+deps:
+	make -C deps/limine limine
 
 run:
 	make -C arch/$(ARCH) run
