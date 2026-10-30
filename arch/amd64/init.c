@@ -12,12 +12,12 @@
 
 #define IA32_APIC_BASE_MSR 0x1B
 void disable_lapic_and_enable_pic(void) {
-    /* 1. Clear Bit 11 of IA32_APIC_BASE MSR to disable Local APIC hardware */
+    /* Clear Bit 11 of IA32_APIC_BASE MSR to disable Local APIC hardware */
     uint64_t apic_base = rdmsr(IA32_APIC_BASE_MSR);
     apic_base &= ~(1ULL << 11);
     wrmsr(IA32_APIC_BASE_MSR, apic_base);
 
-    /* 2. Force IMCR to legacy 8259 PIC mode via ports 0x22 / 0x23 */
+    /* Force IMCR to legacy 8259 PIC mode via ports 0x22 / 0x23 */
     port_byte_out(0x22, 0x70);
     port_byte_out(0x23, 0x00);
 }
@@ -25,9 +25,6 @@ void disable_lapic_and_enable_pic(void) {
 void init_arch(void) {
 	limine_parse_responses();
 	putsnl("[ok] Parse Limine tables successfully");
-
-	/* Make sure framebuffer address, width, height, and pitch are set */
-	// init_fb_driver(fb_response->address, fb_response->width, fb_response->height, fb_response->pitch);
 
 	init_gdt();
 	init_tss();
