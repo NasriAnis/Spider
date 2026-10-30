@@ -1,39 +1,22 @@
 #include <int.h>
 
-struct GlobalDescriptorTableEntry {
-	uint32_t SegmentBase;
-	uint32_t SegmentLimit; // low 20 bits used
-	uint8_t AccessByte;
-	uint8_t Flags;         // low 4 bits used
-};
+#define GDT_ENTRIES 7
 
-#define GDT_ENTRIES 6
-#define GDT_ENTRY_SIZE 8
+struct GDTR {
+    uint16_t limit;
+    uint64_t base;
+} __attribute__((packed));
 
-struct __attribute__((packed)) GDTR {
-	uint16_t limit;
-	uint32_t base;
-};
+struct SystemDescriptor64 {
+    uint16_t limit_low;
+    uint16_t base_low;
+    uint8_t  base_mid;
+    uint8_t  access;
+    uint8_t  flags_limit;
+    uint8_t  base_high_byte;
+    uint32_t base_high_dword;
+    uint32_t reserved;
+} __attribute__((packed));
 
-#define KERNEL_CODE_SEGMENT 0x8
-#define KERNEL_DATA_SEGMENT 0x10
-
-/*
-	* Initialize GDT table to memory
-	* and load its limit/base to gdtr
-	* note that this GDT table specifies
-	* a flat model setup.
-
-	* In memory GDT table layout:
-
-	* 00 00 00 00 00 00 00 00    # null
-	* ff ff 00 00 00 9a cf 00    # kernel code
-	* ff ff 00 00 00 92 cf 00    # kernel data
-	* ff ff 00 00 00 fa cf 00    # user code
-	* ff ff 00 00 00 f2 cf 00    # user data
-	* # TSS descriptor
-*/
+void set_gdt_tss(int index, uintptr_t tss_addr, uint32_t tss_size);
 void init_gdt(void);
-
-void encode_gdt_entry(uint8_t *target, struct GlobalDescriptorTableEntry source);
-void load_gdt(struct GDTR *gdtr);

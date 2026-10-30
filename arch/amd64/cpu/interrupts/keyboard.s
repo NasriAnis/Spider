@@ -1,8 +1,12 @@
 .intel_syntax noprefix
 .global keyboard_handler_stub
 .extern keyboard_handler
+.extern pic_send_eoi
+
+.text
 
 keyboard_handler_stub:
+	# Save all 64-bit registers
 	push rax
 	push rbx
 	push rcx
@@ -19,11 +23,15 @@ keyboard_handler_stub:
 	push r14
 	push r15
 
+	# Clear Direction Flag for System V AMD64 ABI
+	cld
+
+	# Call C Keyboard Handler
 	call keyboard_handler
 
-	# Send End-Of-Interrupt (EOI) to Master PIC
-	mov al, 0x20
-	out 0x20, al
+	# Send EOI for IRQ1 (1st argument in RDI = 1)
+	mov rdi, 1
+	call pic_send_eoi
 
 	# Restore registers
 	pop r15

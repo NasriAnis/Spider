@@ -1,7 +1,14 @@
 .intel_syntax noprefix
 .extern cpu_interrupts_handler
+.global default_isr_stub
 
 .text
+
+# Default fallback handler for unmapped interrupt vectors
+default_isr_stub:
+	cli
+	hlt
+	jmp default_isr_stub
 
 isr_common_handler_stub:
 	# Save all 64-bit general-purpose registers
@@ -41,10 +48,6 @@ isr_common_handler_stub:
 	pop rcx
 	pop rbx
 	pop rax
-
-	# Send EOI to Master PIC (Port 0x20)
-	mov al, 0x20
-	out 0x20, al
 
 	# Clean up vector number and error code (2 * 8 bytes = 16 bytes)
 	add rsp, 16
