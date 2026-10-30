@@ -35,48 +35,48 @@ static volatile uint64_t limine_requests_start[4] = LIMINE_REQUESTS_START_MARKER
 __attribute__((used, section(".limine_requests_end")))
 static volatile uint64_t limine_requests_end[2] = LIMINE_REQUESTS_END_MARKER;
 
-void fb_check(){
-	if (framebuffer_request.response == 0 || framebuffer_request.response->framebuffer_count < 1) {
-		// add error handling
+void fb_init(void) {
+	if (framebuffer_request.response == NULL || framebuffer_request.response->framebuffer_count < 1) {
+		return; /* Guard against NULL dereference */
 	}
 
 	for (uint64_t i = 0; i < framebuffer_request.response->framebuffer_count; i++) {
 		struct limine_framebuffer *framebuffer = framebuffer_request.response->framebuffers[i];
 
 		if (framebuffer->memory_model != LIMINE_FRAMEBUFFER_RGB || framebuffer->bpp != 32) {
-			// add error handling
+			continue;
 		}
 		init_fb_driver((uintptr_t)framebuffer->address, framebuffer->width, framebuffer->height, framebuffer->pitch);
 	}
 }
 
-void mmap_init(){
-	if (memmap_request.response == 0 || memmap_request.response->entry_count < 1) {
-		// add error handling
+void mmap_init(void) {
+	if (memmap_request.response == NULL || memmap_request.response->entry_count < 1) {
+		return; /* Guard against NULL dereference */
 	}
 
 	for (uint64_t i = 0; i < memmap_request.response->entry_count; i++) {
 		struct limine_memmap_entry *mm_entry = memmap_request.response->entries[i];
 
-		if (mm_entry->type == LIMINE_MEMMAP_USABLE){
+		if (mm_entry->type == LIMINE_MEMMAP_USABLE) {
 			available_mm_register(mm_entry->base, mm_entry->length);
 		}
 	}
 }
 
-void hhdm_init(){
-	if (hhdm_request.response == 0) {
-        // Handle error
-    }
-    kernel_state.hhdm_offset = hhdm_request.response->offset;
+void hhdm_init(void) {
+	if (hhdm_request.response == NULL) {
+		return; /* Guard against NULL dereference */
+	}
+	kernel_state.hhdm_offset = hhdm_request.response->offset;
 }
 
-void limine_parse_responses(){
+void limine_parse_responses(void) {
 	if (LIMINE_BASE_REVISION_SUPPORTED(limine_base_revision) == 0) {
-		// add error handling
+		return;
 	}
 
-	fb_check();
+	fb_init();
 	mmap_init();
 	hhdm_init();
 }
