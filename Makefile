@@ -8,13 +8,13 @@ all: deps
 deps:
 	make -C deps/limine limine
 
-run:
+run: deps
 	make -C arch/$(ARCH) run
 
-iso:
+iso: deps
 	make -C arch/$(ARCH) iso
 
-debug:
+debug: deps
 	make -C arch/$(ARCH) debug
 
 clean:
