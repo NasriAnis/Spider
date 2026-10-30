@@ -1,10 +1,10 @@
 # TODO
 - [ ] Implement a Kerror handler function
 - [ ] Implement User space
-- [ ] Expend to amd64 architecture
 - [ ] Expend to ARM architecture
 
 # In progress
+- [ ] Expend to amd64 architecture
 - [ ] Setup a filesystem
 
 # On Hold

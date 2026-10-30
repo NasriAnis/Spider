@@ -3,5 +3,5 @@
 
 void init_kernel_utilities(){
 	pmm_init_regions();
-	putsnl("[/] init PMM sucesfully");
+	putsnl("[ok] init PMM sucesfully");
 }

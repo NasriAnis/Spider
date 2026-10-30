@@ -54,14 +54,14 @@ void keyboard_on_scancode(unsigned char sc) {
 	if (sc & 0x80) return;
 
 	char c = shift ? keyboard_map_shift[sc] : keyboard_map[sc];
-	if (c) kbd_push(c); 
+	if (c) kbd_push(c);
 }
 
 char getchar(void) {
-	asm volatile("cli");
 	while (kbd_head == kbd_tail) /* empty */
-		asm volatile("sti; hlt; cli");
+		__asm__ volatile ("hlt");
 
+	asm volatile("cli");
 	char c = kbd_buf[kbd_tail];
 	kbd_tail = (kbd_tail + 1) % KBD_BUF_SIZE;
 	asm volatile("sti");
