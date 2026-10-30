@@ -3,11 +3,9 @@ SRC_DIRS := $(ROOT)/kernel $(ROOT)/drivers $(ROOT)/lib $(ROOT)/font $(ROOT)/shel
 
 C_SOURCES := $(sort \
     $(shell find $(SRC_DIRS) -name '*.c') \
-    $(wildcard ../*.c) \
     $(shell find . -name '*.c'))
 S_SOURCES := $(sort \
     $(shell find $(SRC_DIRS) -name '*.s') \
-    $(wildcard ../*/*.s) $(wildcard ../*.s) \
     $(shell find . -name '*.s'))
 
 OBJS      = $(C_SOURCES:.c=.o) $(S_SOURCES:.s=.o)
@@ -35,11 +33,12 @@ LIMINE_BIN = $(LIMINE)/limine
 all: $(TARGET)
 
 run: iso
-	qemu-system-x86_64 -no-reboot -no-shutdown \
+	qemu-system-x86_64 -no-reboot -no-shutdown -D qemu.log \
 		-d int,cpu_reset \
 		-cpu qemu64 \
 		-m 16G \
 		-cdrom $(ISO)
+	$(MAKE) clean
 
 debug: iso
 	qemu-system-x86_64 -s -S -no-reboot -cdrom $(ISO) -d int,cpu_reset -no-shutdown -D qemu.log &
