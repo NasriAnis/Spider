@@ -19,6 +19,11 @@ THIS PROJECT IS STILL IN DEVELLOPMENT !!!!
 This operating system support multitude architecture specified inside
 the `/arch` folder.
 
+Clone the repo via the command:
+```
+git clone --recursive https://github.com/NasriAnis/Spider.git
+```
+
 To run this OS you need the qemu emulator and some ISO/boot tools.
 The list of requirements is: `qemu`, `xorriso` (from `libisoburn`), `limine`.
 
