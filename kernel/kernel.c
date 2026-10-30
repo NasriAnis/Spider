@@ -16,6 +16,7 @@ void kmain(void){
 
 	kernel_shell_run();
 
+	putsnl("Looping...");
 	while (1) {
 	}
 }
