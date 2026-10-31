@@ -2,10 +2,6 @@
 #include "pmm.h"
 #include <arch.h>
 
-// Declare kernel symbols as byte arrays to preserve full 64-bit pointer addresses
-extern uint8_t _kernel_start[];
-extern uint8_t _kernel_end[];
-
 struct bitmap_loc {
     uint64_t row;
     uint64_t col;
@@ -54,7 +50,7 @@ void fill_bitmap(uint64_t len, uintptr_t phys_addr, uint8_t value) {
 
 void init_mm_tracking(void) {
     // Store region tracking structure in kernel BSS space
-    mm_available_regions = (struct mm_available_regions *)_kernel_end;
+    mm_available_regions = (struct mm_available_regions *)kernel_state.kernel_virtual_end;
     mm_available_regions->regions_number = 0;
     mm_available_regions->highest_address = 0;
 }
@@ -118,9 +114,8 @@ void pmm_init_regions(void) {
     fill_bitmap(PAGE_SIZE, 0, 1);
 
     // 3. Protect kernel physical memory range
-    // Adjust kernel base physical offset according to your linker base (e.g. 0x100000 or Limine address response)
-    uintptr_t kstart_phys = 0x100000;
-    uintptr_t kend_phys = kstart_phys + ((uintptr_t)_kernel_end - (uintptr_t)_kernel_start);
+    uintptr_t kstart_phys = kernel_state.kernel_physical_base;
+    uintptr_t kend_phys = kernel_state.kernel_physical_end;
     fill_bitmap(kend_phys - kstart_phys, kstart_phys, 1);
 
     // 4. Protect bitmap's own physical memory region

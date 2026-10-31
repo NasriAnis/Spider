@@ -29,11 +29,28 @@ static volatile struct limine_framebuffer_request framebuffer_request = {
     .revision = 0
 };
 
+__attribute__((used, section(".limine_requests")))
+static volatile struct limine_executable_address_request kaddr_req = {
+    .id = LIMINE_EXECUTABLE_ADDRESS_REQUEST_ID,
+    .revision = 0
+};
+
 __attribute__((used, section(".limine_requests_start")))
 static volatile uint64_t limine_requests_start[4] = LIMINE_REQUESTS_START_MARKER;
 
 __attribute__((used, section(".limine_requests_end")))
 static volatile uint64_t limine_requests_end[2] = LIMINE_REQUESTS_END_MARKER;
+
+extern uint8_t _kernel_start[];
+extern uint8_t _kernel_end[];
+
+void get_kernel_addr(void){
+	// add check
+	kernel_state.kernel_physical_base = kaddr_req.response->physical_base;
+	kernel_state.kernel_virtual_base = kaddr_req.response->virtual_base;
+	kernel_state.kernel_physical_end = kernel_state.kernel_physical_base + ((uintptr_t)_kernel_end - (uintptr_t)_kernel_start);
+	kernel_state.kernel_virtual_end = (uintptr_t)_kernel_end;
+}
 
 void fb_init(void) {
 	if (framebuffer_request.response == NULL || framebuffer_request.response->framebuffer_count < 1) {
@@ -76,6 +93,7 @@ void limine_parse_responses(void) {
 		return;
 	}
 
+	get_kernel_addr();
 	fb_init();
 	mmap_init();
 	hhdm_init();
