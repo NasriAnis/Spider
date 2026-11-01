@@ -25,6 +25,10 @@ static void putsc(char *s, int color) {
 	for (int i = 0; s[i]; i++) putcc(s[i], color);
 }
 
+void putc(char c){
+	putcc(c, COLOR_WHITE);
+}
+
 void backspace(){
 	if (display->backspace(cur_row, cur_col)){
 		cur_col -= 1;
