@@ -12,14 +12,14 @@
 
 #define IA32_APIC_BASE_MSR 0x1B
 void disable_lapic_and_enable_pic(void) {
-    /* Clear Bit 11 of IA32_APIC_BASE MSR to disable Local APIC hardware */
-    uint64_t apic_base = rdmsr(IA32_APIC_BASE_MSR);
-    apic_base &= ~(1ULL << 11);
-    wrmsr(IA32_APIC_BASE_MSR, apic_base);
+	/* Clear Bit 11 of IA32_APIC_BASE MSR to disable Local APIC hardware */
+	uint64_t apic_base = rdmsr(IA32_APIC_BASE_MSR);
+	apic_base &= ~(1ULL << 11);
+	wrmsr(IA32_APIC_BASE_MSR, apic_base);
 
-    /* Force IMCR to legacy 8259 PIC mode via ports 0x22 / 0x23 */
-    port_byte_out(0x22, 0x70);
-    port_byte_out(0x23, 0x00);
+	/* Force IMCR to legacy 8259 PIC mode via ports 0x22 / 0x23 */
+	port_byte_out(0x22, 0x70);
+	port_byte_out(0x23, 0x00);
 }
 
 void init_arch(void) {
@@ -41,9 +41,12 @@ void init_arch(void) {
 		*/
 	disable_lapic_and_enable_pic();
 
+	// initialize IDT table
+	// with default CPU interrupts
 	init_idt();
 	cpu_interrupts_setup();
 
+	// init interupts for the keyboard
 	ps2_keyboard_init();
 
 	/* Drain any stale PS/2 bytes before enabling interrupts */

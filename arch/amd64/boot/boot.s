@@ -10,12 +10,12 @@ stack_top:
 .global _start
 .type _start, @function
 _start:
-    cli
-    cld
-    lea rsp, [rip + stack_top]
-    xor ebp, ebp
-    call kmain
+	cli
+	cld
+	lea rsp, [rip + stack_top]
+	xor ebp, ebp
+	call kmain
 1:  hlt
-    jmp 1b
+	jmp 1b
 
 .size _start, . - _start

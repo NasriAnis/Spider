@@ -25,8 +25,8 @@ void kernel_shell_run(void) {
 }
 
 static const struct command *find_command(const char *name) {
-    for (size_t i = 0; i < commands_count; i++)
-        if (strcmp(name, commands[i].name) == 0) return &commands[i];
+	for (size_t i = 0; i < commands_count; i++)
+		if (strcmp(name, commands[i].name) == 0) return &commands[i];
 
-    return 0;
+	return 0;
 }
