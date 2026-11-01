@@ -1,7 +1,7 @@
 #include <arch.h>
 #include <io.h>
 #include "boot/limine.h"
-#include <drivers/io/keyboard.h>
+#include <ps2_keyboard.h>
 #include <gdt.h>
 #include <tss.h>
 #include <idt.h>

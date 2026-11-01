@@ -45,3 +45,13 @@ void pic_send_eoi(uint8_t irq) {
 	}
 	port_byte_out(PIC1_COMMAND, 0x20);
 }
+
+void pic_unmask_irq(uint8_t irq) {
+	uint16_t port = PIC1_DATA;
+	if (irq >= 8) {
+		port = PIC2_DATA;
+		irq -= 8;
+		pic_unmask_irq(2);   // slave hangs off master's IRQ2, so it must be open too
+	}
+	port_byte_out(port, port_byte_in(port) & ~(1 << irq));
+}

@@ -1,31 +1,20 @@
 #include <pio.h>
+#include <idt.h>
+#include <pic.h>
 #include <drivers/io/keyboard.h>
+#include <ps2_keyboard.h>
+
+extern void keyboard_handler_stub(void);
 
 #define PS2_STATUS_PORT 0x64
 #define PS2_DATA_PORT   0x60
 
 void ps2_keyboard_init(void) {
-	// Enable Keyboard Port (Command 0xAE)
-	while (port_byte_in(PS2_STATUS_PORT) & 0x02);
-	port_byte_out(PS2_STATUS_PORT, 0xAE);
+	/* Register IRQ1 (Keyboard) at vector 0x21 */
+	set_idt_gate(0x21, (uintptr_t)keyboard_handler_stub, 0, 0x8E);
 
-	// Read PS/2 Controller Command Byte (Command 0x20)
-	while (port_byte_in(PS2_STATUS_PORT) & 0x02);
-	port_byte_out(PS2_STATUS_PORT, 0x20);
-
-	while (!(port_byte_in(PS2_STATUS_PORT) & 0x01));
-	unsigned char command_byte = port_byte_in(PS2_DATA_PORT);
-
-	// Enable IRQ1 (Bit 0 = 1) and Enable Keyboard Clock (Bit 4 = 0)
-	command_byte |= (1 << 0);
-	command_byte &= ~(1 << 4);
-
-	// Write PS/2 Controller Command Byte (Command 0x60)
-	while (port_byte_in(PS2_STATUS_PORT) & 0x02);
-	port_byte_out(PS2_STATUS_PORT, 0x60);
-
-	while (port_byte_in(PS2_STATUS_PORT) & 0x02);
-	port_byte_out(PS2_DATA_PORT, command_byte);
+	/* Unmask IRQ1 (Keyboard) on Master PIC */
+	pic_unmask_irq(1);
 }
 
 void keyboard_handler(void) {

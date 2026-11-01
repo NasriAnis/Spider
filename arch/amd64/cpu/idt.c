@@ -30,11 +30,12 @@ void init_idt(void) {
     /* Remap PIC using port_byte_out */
     pic_setup_icw();
 
-    /* Register IRQ1 (Keyboard) at vector 0x21 */
-    set_idt_gate(0x21, (uintptr_t)keyboard_handler_stub, 0, 0x8E);
+	// mask all interupts, will unmask later as needed
+	pic_set_masks(0xFF, 0xFF);
 
-    /* Mask all IRQs except IRQ1 (Keyboard) on Master PIC */
-    pic_set_masks(0xFD, 0xFF); // 0xFD = 1111 1101 (Bit 1 unmasked)
+	/* Load IDTR */
+	idtr.limit = (sizeof(struct InterruptDescriptorEntry) * IDT_ENTRIES) - 1;
+	idtr.base  = (uintptr_t)&IDT;
 
     /* Load IDTR */
     idtr.limit = (sizeof(struct InterruptDescriptorEntry) * IDT_ENTRIES) - 1;
