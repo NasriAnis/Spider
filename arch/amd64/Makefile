@@ -41,7 +41,7 @@ run: iso
 	$(MAKE) clean
 
 debug: iso
-	qemu-system-x86_64 -s -S -no-reboot -cdrom $(ISO) -d int,cpu_reset -no-shutdown -D qemu.log &
+	setsid qemu-system-x86_64 -s -S -no-reboot -cdrom $(ISO) -d int,cpu_reset -no-shutdown -D qemu.log &
 	gdb -ex "set disassembly-flavor intel" \
 		-ex "target remote localhost:1234" \
 		-ex "set architecture i386:x86-64" \
