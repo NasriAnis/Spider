@@ -47,6 +47,7 @@ debug: iso
 		-ex "set architecture i386:x86-64" \
 		-ex "symbol-file $(TARGET)" \
 		-ex "break kmain"
+		$(MAKE) clean
 
 iso: $(TARGET) $(LIMINE_BIN)
 	rm -rf $(ISODIR)
