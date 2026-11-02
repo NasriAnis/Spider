@@ -1,6 +1,6 @@
 #include <limine-protocol/include/limine.h>
 #include <int.h>
-#include <arch.h>
+#include <kernel/logs.h>
 #include <drivers/mem/pmm.h>
 #include "limine.h"
 
@@ -41,19 +41,23 @@ static volatile uint64_t limine_requests_start[4] = LIMINE_REQUESTS_START_MARKER
 __attribute__((used, section(".limine_requests_end")))
 static volatile uint64_t limine_requests_end[2] = LIMINE_REQUESTS_END_MARKER;
 
-extern uint8_t _kernel_start[];
-extern uint8_t _kernel_end[];
+extern uintptr_t _kernel_start;
+extern uintptr_t _kernel_end;
 
 void get_kernel_addr(void){
-	// add check
+	if (kaddr_req.response == NULL){
+		register_error_message(HIGH, "limine", "no executable address response");
+		return;
+	}
 	kernel_state.kernel_physical_base = kaddr_req.response->physical_base;
 	kernel_state.kernel_virtual_base = kaddr_req.response->virtual_base;
-	kernel_state.kernel_physical_end = kernel_state.kernel_physical_base + ((uintptr_t)_kernel_end - (uintptr_t)_kernel_start);
-	kernel_state.kernel_virtual_end = (uintptr_t)_kernel_end;
+	kernel_state.kernel_physical_end = kernel_state.kernel_physical_base + ((uintptr_t)&_kernel_end - (uintptr_t)&_kernel_start);
+	kernel_state.kernel_virtual_end = (uintptr_t)&_kernel_end;
 }
 
 void fb_init(void) {
 	if (framebuffer_request.response == NULL || framebuffer_request.response->framebuffer_count < 1) {
+		register_error_message(HIGH, "limine", "no framebuffer response");
 		return; /* Guard against NULL dereference */
 	}
 
@@ -69,6 +73,7 @@ void fb_init(void) {
 
 void mmap_init(void) {
 	if (memmap_request.response == NULL || memmap_request.response->entry_count < 1) {
+		register_error_message(HIGH, "limine", "no memory map response");
 		return; /* Guard against NULL dereference */
 	}
 
@@ -83,7 +88,8 @@ void mmap_init(void) {
 
 void hhdm_init(void) {
 	if (hhdm_request.response == NULL) {
-		return; /* Guard against NULL dereference */
+		register_error_message(HIGH, "limine", "no HHDM offset response");
+		return;
 	}
 	kernel_state.hhdm_offset = hhdm_request.response->offset;
 }

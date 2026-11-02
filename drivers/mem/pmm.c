@@ -1,6 +1,6 @@
 #include <int.h>
 #include "pmm.h"
-#include <arch.h>
+#include <kernel/logs.h>
 
 struct bitmap_loc {
 	uint64_t row;

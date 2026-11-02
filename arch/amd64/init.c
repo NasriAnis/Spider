@@ -1,4 +1,3 @@
-#include <arch.h>
 #include <io.h>
 #include "boot/limine.h"
 #include <ps2_keyboard.h>
@@ -9,6 +8,8 @@
 #include <isr.h>
 #include <pio.h>
 #include <msr.h>
+#include <kernel/logs.h>
+#include <arch.h>
 
 #define IA32_APIC_BASE_MSR 0x1B
 void disable_lapic_and_enable_pic(void) {

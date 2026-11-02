@@ -3,6 +3,7 @@ SRC_DIRS := $(ROOT)/kernel $(ROOT)/drivers $(ROOT)/lib $(ROOT)/font $(ROOT)/shel
 
 C_SOURCES := $(sort \
     $(shell find $(SRC_DIRS) -name '*.c') \
+    $(shell find ../include -name '*.c') \
     $(shell find . -name '*.c'))
 S_SOURCES := $(sort \
     $(shell find $(SRC_DIRS) -name '*.s') \
