@@ -16,7 +16,6 @@ void kmain(void){
 	arch_error_log.errors_number = 0;
 
 	init_arch();
-	handle_critical_logs();
 	init_kernel_utilities();
 	log_kernel_state();
 

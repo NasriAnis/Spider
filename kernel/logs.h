@@ -9,9 +9,11 @@ typedef struct {
 } KernelState;
 
 enum ErrorSeverity { LOW, MEDIUM, HIGH };
+enum OsState { ARCH, KERNEL, USERLAND };
 
 typedef struct {
 	enum ErrorSeverity severity;
+	enum OsState at_state;
 	char *issuer;
 	char *error_message;
 } ErrorLog;
@@ -24,5 +26,5 @@ typedef struct {
 extern KernelState kernel_state;
 extern ArchErrors arch_error_log;
 
-void register_error_message(enum ErrorSeverity severity, char* issuer, char* error_message);
-void handle_critical_logs();
+void register_error_message(enum ErrorSeverity severity, enum OsState at_state, char* issuer, char* error_message);
+void handle_critical_logs(enum OsState at_state);
