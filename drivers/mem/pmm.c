@@ -87,6 +87,7 @@ void init_bitmap(uintptr_t end_addr) {
 	}
 
 	if (bitmap_phys_addr == 0) {
+		register_log(FAILS, KERNEL, "PMM", "Failed to locate physical memory for bitmap");
 		return; // Failed to locate physical memory for bitmap
 	}
 
@@ -146,6 +147,7 @@ uintptr_t pmm_alloc(uint32_t size) {
 			run = 0;
 		}
 	}
+	register_log(FAILS, KERNEL, "PMM", "Cannot allocate out of memory");
 	return 0; // Out of memory
 }
 

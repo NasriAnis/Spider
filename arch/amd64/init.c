@@ -59,5 +59,5 @@ void init_arch(void) {
 	__asm__ volatile ("sti");
 	putsnl("[ok] Init IDT tables successfully");
 
-	handle_critical_logs(ARCH);
+	show_logs(MISS, ARCH);
 }

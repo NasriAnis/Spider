@@ -8,12 +8,12 @@
 #include <arch.h>
 
 KernelState kernel_state = {0};
-ArchErrors arch_error_log;
+KernelLogs kernel_logs;
 
 void log_kernel_state();
 
 void kmain(void){
-	arch_error_log.errors_number = 0;
+	kernel_logs.log_number = 0;
 
 	init_arch();
 	init_kernel_utilities();

@@ -46,7 +46,7 @@ extern uintptr_t _kernel_end;
 
 void get_kernel_addr(void){
 	if (kaddr_req.response == NULL){
-		register_error_message(HIGH, ARCH, "limine", "no executable address response");
+		register_log(MISS, ARCH, "limine", "no executable address response");
 		return;
 	}
 	kernel_state.kernel_physical_base = kaddr_req.response->physical_base;
@@ -57,7 +57,7 @@ void get_kernel_addr(void){
 
 void fb_init(void) {
 	if (framebuffer_request.response == NULL || framebuffer_request.response->framebuffer_count < 1) {
-		register_error_message(HIGH, ARCH, "limine", "no framebuffer response");
+		register_log(MISS, ARCH, "limine", "no framebuffer response");
 		return; /* Guard against NULL dereference */
 	}
 
@@ -73,7 +73,7 @@ void fb_init(void) {
 
 void mmap_init(void) {
 	if (memmap_request.response == NULL || memmap_request.response->entry_count < 1) {
-		register_error_message(HIGH, ARCH, "limine", "no memory map response");
+		register_log(MISS, ARCH, "limine", "no memory map response");
 		return; /* Guard against NULL dereference */
 	}
 
@@ -88,7 +88,7 @@ void mmap_init(void) {
 
 void hhdm_init(void) {
 	if (hhdm_request.response == NULL) {
-		register_error_message(HIGH, ARCH, "limine", "no HHDM offset response");
+		register_log(MISS, ARCH, "limine", "no HHDM offset response");
 		return;
 	}
 	kernel_state.hhdm_offset = hhdm_request.response->offset;

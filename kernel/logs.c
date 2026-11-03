@@ -1,21 +1,32 @@
 #include <io.h>
 #include <kernel/logs.h>
 
-void register_error_message(enum ErrorSeverity severity, enum OsState at_state, char* issuer, char* error_message){
-	int i = arch_error_log.errors_number;
-	arch_error_log.errors_log[i].severity = severity;
-	arch_error_log.errors_log[i].issuer = issuer;
-	arch_error_log.errors_log[i].error_message = error_message;
-	arch_error_log.errors_log[i].at_state = at_state;
-	arch_error_log.errors_number += 1;
+char* string_logtype_enum(enum LogType log_type){
+	switch(log_type){
+		case NOTICE: return "NOTICE";
+		case MISS: return "MISS";
+		case FAILS: return "FAILS";
+	}
 }
 
-void handle_critical_logs(enum OsState at_state){
-	for (int i = 0; i<arch_error_log.errors_number; i++){
-		if (arch_error_log.errors_log[i].severity == HIGH && arch_error_log.errors_log[i].at_state == at_state){
-			eputs("[Critical Err] ");
-			printf(":: %s ", arch_error_log.errors_log[i].issuer);
-			printf(":: %s\n", arch_error_log.errors_log[i].error_message);
+void register_log(enum LogType log_type, enum LogAtState at_state, char* issuer, char* log_message){
+	int i = kernel_logs.log_number;
+	kernel_logs.log[i].log_type = log_type;
+	kernel_logs.log[i].issuer = issuer;
+	kernel_logs.log[i].log_message = log_message;
+	kernel_logs.log[i].at_state = at_state;
+	kernel_logs.log_number += 1;
+}
+
+void show_logs(enum LogType log_type, enum LogAtState at_state){
+	printf("Logs:\n");
+	for (int i = 0; i<kernel_logs.log_number; i++){
+		if ( kernel_logs.log[i].log_type == log_type &&
+			kernel_logs.log[i].at_state == at_state
+		){
+			printf("[%s] ", string_logtype_enum(log_type));
+			printf(":: %s ", kernel_logs.log[i].issuer);
+			printf(":: %s\n", kernel_logs.log[i].log_message);
 		}
 	}
 }

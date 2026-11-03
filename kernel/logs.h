@@ -8,23 +8,24 @@ typedef struct {
 	uintptr_t kernel_virtual_end;
 } KernelState;
 
-enum ErrorSeverity { LOW, MEDIUM, HIGH };
-enum OsState { ARCH, KERNEL, USERLAND };
+enum LogType { NOTICE, MISS, FAILS };
+enum LogAtState { ARCH, KERNEL, USERLAND };
 
 typedef struct {
-	enum ErrorSeverity severity;
-	enum OsState at_state;
+	enum LogType log_type;
+	enum LogAtState at_state;
 	char *issuer;
-	char *error_message;
-} ErrorLog;
+	char *log_message;
+} LogInfo;
 
 typedef struct {
-	int errors_number;
-	ErrorLog errors_log[];
-} ArchErrors;
+	int log_number;
+	LogInfo log[];
+} KernelLogs;
 
 extern KernelState kernel_state;
-extern ArchErrors arch_error_log;
+extern KernelLogs kernel_logs;
 
-void register_error_message(enum ErrorSeverity severity, enum OsState at_state, char* issuer, char* error_message);
-void handle_critical_logs(enum OsState at_state);
+void register_log(enum LogType log_type, enum LogAtState at_state, char* issuer, char* log_message);
+void show_logs(enum LogType log_type, enum LogAtState at_state);
+char* string_logtype_enum(enum LogType log_type);
