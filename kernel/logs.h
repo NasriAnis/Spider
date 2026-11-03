@@ -1,5 +1,15 @@
 #include <int.h>
 
+/*
+ * Difference between physical and virtual:
+ * - Virtual means where does the linker script
+ * says of where the kernel lives
+ * - Physical is where the bootloader loaded
+ * the kernel
+ *
+ * So a virtual address maps to a physical one
+ * when paging is working
+ */
 typedef struct {
 	uintptr_t hhdm_offset;
 	uintptr_t kernel_physical_base;
