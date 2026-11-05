@@ -1,21 +1,41 @@
+# PMM
+
 The physical memory manager in the Spider Operating system uses a bitmap
 to tell which memory location is free or in use.
 
-First of all the arch specific bootloader calls a functions
-`available_mm_register(uintptr_t addr, uint64_t len)` that register an address and length
-into a structure `mm_available_regions` that keeps track of how much regions the bootloader
-gave with its start address and length of it, these informations get store at the structure
-with the highest address specified and an array of address and length.
+## How everything is set up
 
-After finishing registering these regions the kernel call a `pmm_init_regions()` function
-that takes the `mm_available_regions` structure parse it and creates a bitmap array that is
-located inside the `pmm_bitmap` structure as well as `max_rows` this bitmap has calculate
-from the highest address, PAGE_SIZE and numbers of bit per bitmap row "all specified
-at `pmm.h`".
+**1. Getting the available memory regions:**
+Depending the arch specific boot loader gets available memory regions.
 
-To fill this bitmap from the `mm_available_regions` the initialize function takes the highest address
-calculate the `max_rows` for a 8 bit column for each row using the `PAGE_SIZE`
-then zero out from the `data` pointer address to the `max_rows`.
+**2. Registering the available regions:**
+Upon getting this region it calls the `available_mm_register(uintptr_t addr, uint64_t len)` with the available to use regions address and length.
 
-The kernel address start and length are calculated then a relative row, col to end row, end col
-are calculated then these `data` bitmap bits get changed from 0's to 1's marked as used.
+These regions are then saved into a `mm_available_regions` structure in the `pmm.h` file as that get loaded by :
+```
+struct region {
+	uintptr_t addr;  // region address
+	uint64_t len;    // regions length
+};
+
+struct mm_available_regions {
+	uint32_t regions_number;   // hold how much individual regions registred
+	uint64_t highest_address;  // hold highest avilable address in all regions
+	struct region region[];    // thiis holds the regions info
+};
+```
+
+This will be helpful to later computer the total available memory and build our bitmap.
+
+**3. Initializing the bitmap with the fetched regions information:**
+After all regions has been saved to the previously cited structure, the kernel calls `pmm_init_regions()` function.
+
+This function first init the bitmap by computing how much bits are needed to hold the whole available memory (by using the information gathered by the previous structure like `mm_available_regions->highest_address`, `PAGE_SIZE` and `BITS_PER_BITMAP_ROW`), then finding a large enough region to hold the bitmap structure.
+
+This structure is then zero out completely then the kernel and bitmap own address bits are switched to 1 (marked as busy).
+
+## Using the PMM API's
+
+After the bitmap is set up, we can use the PMM API's :
+- `uintptr_t pmm_alloc(uint32_t size);`
+- `void pmm_free(uintptr_t pointer, uint64_t size);`
