@@ -1,6 +1,7 @@
 #include <int.h>
 #include "pmm.h"
 #include <kernel/logs.h>
+#include <kernel/kernel.h>
 
 struct bitmap_loc {
 	uint64_t row;
@@ -88,6 +89,7 @@ void init_bitmap(uintptr_t end_addr) {
 
 	if (bitmap_phys_addr == 0) {
 		register_log(FAILS, KERNEL, "PMM", "Failed to locate physical memory for bitmap");
+		PANIC("FAILED TO LOCATE PHYSICAL MEMORY FOR THE BITMAP");
 		return; // Failed to locate physical memory for bitmap
 	}
 
