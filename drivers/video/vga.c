@@ -1,16 +1,6 @@
 #include <drivers/video/display.h>
 #include <pio.h>
-
-#define VGA_MEM   ((volatile unsigned char *)0xB8000)
-
-#define CTRL_PORT 0x3D4
-#define DATA_PORT 0x3D5
-
-#define COLS      80
-#define ROWS      25
-
-#define ATTR_WHITE 0x0F
-#define ATTR_RED   0x04
+#include "vga.h"
 
 static unsigned char attr_of(int color) {
 	return color == COLOR_RED ? ATTR_RED : ATTR_WHITE;
@@ -71,4 +61,3 @@ static struct display_driver vga_driver = {
 void init_vga_text_driver(void) {
 	register_display_driver(&vga_driver);
 }
-

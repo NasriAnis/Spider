@@ -2,18 +2,12 @@
 #include <int.h>
 #include <mem.h>
 #include <font/font.h>
+#include "fb.h"
 
 static uintptr_t fb_addr = 0;
 static uint32_t fb_width = 0;
 static uint32_t fb_height = 0;
 static uint32_t fb_pitch = 0;
-
-#define FONT_WIDTH  8
-#define FONT_HEIGHT 16
-
-#define BG_COLOR 0x00000000
-#define RED 0x00FF0000
-#define WHITE 0x00FFFFFF
 
 int fb_cols(void) {
 	return fb_width / FONT_WIDTH;
