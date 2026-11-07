@@ -34,5 +34,5 @@ void log_kernel_state(){
 	printf("- Kernel Physical end    : %p\n", kernel_state.kernel_physical_end);
 	printf("- Kernel Virtual base    : %p\n", kernel_state.kernel_virtual_base);
 	printf("- Kernel Virtual end     : %p\n", kernel_state.kernel_virtual_end);
-	printf("- Kernel HHDM offset     : %x\n", kernel_state.hhdm_offset);
+	printf("- Kernel HHDM offset     : %p\n", kernel_state.hhdm_offset);
 }
