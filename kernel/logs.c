@@ -19,7 +19,6 @@ void register_log(enum LogType log_type, enum LogAtState at_state, char* issuer,
 }
 
 void show_logs(enum LogType log_type, enum LogAtState at_state){
-	printf("Logs:\n");
 	for (int i = 0; i<kernel_logs.log_number; i++){
 		if ( kernel_logs.log[i].log_type == log_type &&
 			kernel_logs.log[i].at_state == at_state
