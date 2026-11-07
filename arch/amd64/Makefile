@@ -26,6 +26,14 @@ CFLAGS    = -m64 -march=x86-64 -ffreestanding -Wall -Wextra -g \
 			-MMD -MP -mcmodel=kernel -mno-red-zone
 AS        = as -g --64
 
+QEMU	  = qemu-system-x86_64
+QEMU_BASE_FLAGS = -no-reboot -no-shutdown -D qemu.log \
+		-d int,cpu_reset \
+		-cpu qemu64 \
+		-m 16G \
+		-bios $(ROOT)/deps/ovmf/RELEASEX64_OVMF.fd \
+		-cdrom $(ISO)
+
 LIMINE = $(ROOT)/deps/limine
 LIMINE_BIN = $(LIMINE)/limine
 
@@ -34,15 +42,11 @@ LIMINE_BIN = $(LIMINE)/limine
 all: $(TARGET)
 
 run: iso
-	qemu-system-x86_64 -no-reboot -no-shutdown -D qemu.log \
-		-d int,cpu_reset \
-		-cpu qemu64 \
-		-m 16G \
-		-cdrom $(ISO)
+	$(QEMU) $(QEMU_BASE_FLAGS)
 	$(MAKE) clean
 
 debug: iso
-	setsid qemu-system-x86_64 -s -S -no-reboot -cdrom $(ISO) -d int,cpu_reset -no-shutdown -D qemu.log &
+	setsid $(QEMU) -s -S $(QEMU_BASE_FLAGS) &
 	gdb -ex "set disassembly-flavor intel" \
 		-ex "target remote localhost:1234" \
 		-ex "set architecture i386:x86-64" \
