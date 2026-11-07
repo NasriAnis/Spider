@@ -1,14 +1,10 @@
 # TODO
 - [ ] Implement User space
 - [ ] Expend to ARM architecture
-
-# In progress
-- [ ] Setup a filesystem
-
-# On Hold
 - [ ] Abstraction from PMM with malloc
 - [ ] Processes abstraction
 - [ ] Setup Paging
+- [ ] Setup a filesystem
 
 # Done
 - [x] Setup linear framebuffer text printing abstraction
