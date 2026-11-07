@@ -24,11 +24,3 @@ void *memmove(void *dest, const void *src, size_t n) {
 	}
 	return dest;
 }
-
-uintptr_t memalloc(uint64_t size){
-	return pmm_alloc(size);
-}
-
-void memfree(uintptr_t addr, uint64_t size){
-	pmm_free(addr, size);
-}
