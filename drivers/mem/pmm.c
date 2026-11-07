@@ -57,6 +57,7 @@ void init_mm_tracking(void) {
 }
 
 void available_mm_register(uintptr_t addr, uint64_t len) {
+	// if the structure hasnt been initialized into memory
 	if (!mm_available_regions) {
 		init_mm_tracking();
 	}
@@ -87,6 +88,7 @@ void init_bitmap(uintptr_t end_addr) {
 		}
 	}
 
+	// this is a fatal error if we cannot allocate space for the bitmap
 	if (bitmap_phys_addr == 0) {
 		register_log(FAILS, KERNEL, "PMM", "Failed to locate physical memory for bitmap");
 		PANIC("FAILED TO LOCATE PHYSICAL MEMORY FOR THE BITMAP");
