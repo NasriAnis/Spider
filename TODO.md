@@ -1,10 +1,8 @@
 # TODO
-- [ ] Implement a Kerror handler function
 - [ ] Implement User space
 - [ ] Expend to ARM architecture
 
 # In progress
-- [ ] Expend to amd64 architecture
 - [ ] Setup a filesystem
 
 # On Hold
@@ -20,6 +18,8 @@
 - [x] Setup a keyboard driver and interrupt handler
 - [x] Setup a display driver abstraction
 - [x] PMM Memory allocator
+- [x] Expend to amd64 architecture
+- [x] Implement a Kerror handler function [did a PANIC() macro]
 
 # Note
 For now all Done TODOs are for the i386 architeture. Expanding to amd64 and ARM will be considered later.
