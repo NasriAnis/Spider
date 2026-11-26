@@ -38,6 +38,9 @@ void fill_memmap_struct(uintptr_t addr, uint64_t len, uint64_t type);
 #define BITS_PER_BITMAP_ROW 8
 #define PAGE_SIZE 4096
 
+/*
+ * Specify the size in bytes
+ */
 uintptr_t pmm_alloc(uint32_t size);
 void pmm_free(uintptr_t pointer, uint64_t size);
 
