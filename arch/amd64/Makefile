@@ -1,4 +1,4 @@
-ROOT := ../..
+ROOT := $(abspath ../..)
 SRC_DIRS := $(ROOT)/kernel $(ROOT)/drivers $(ROOT)/lib $(ROOT)/font $(ROOT)/shell
 
 C_SOURCES := $(sort \
