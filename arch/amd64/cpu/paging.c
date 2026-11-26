@@ -1,0 +1,84 @@
+#include <paging.h>
+#include <int.h>
+#include <mem.h>
+#include <drivers/mem/pmm.h>
+#include <kernel/kernel.h>
+
+uint64_t *PML4_VIRT_ADDR;
+uint64_t PML4_PHYS_ADDR;
+
+#define PTE_P    (1ull << 0)
+#define PTE_RW   (1ull << 1)
+#define PTE_NX   (1ull << 63)
+#define PTE_ADDR 0x000FFFFFFFFFF000ull
+
+static uint64_t alloc_table(void) {
+	uint64_t phys = (uint64_t)pmm_alloc(4096);
+	if (!phys) {
+		register_log(FAILS, ARCH, "paging", "out of memory for page tables");
+		for (;;) asm volatile("hlt");
+	}
+	memset(phys_to_virt(phys), 0, 4096);
+	return phys;
+}
+
+static uint64_t *next_table(uint64_t *table, size_t idx) {
+    if (!(table[idx] & PTE_P))
+        table[idx] = alloc_table() | PTE_P | PTE_RW;
+    return (uint64_t *)phys_to_virt(table[idx] & PTE_ADDR);
+}
+
+void map_page(uint64_t virt, uint64_t phys, uint64_t flags) {
+    uint64_t *pdpt = next_table(PML4_VIRT_ADDR, (virt >> 39) & 0x1FF);
+    uint64_t *pd   = next_table(pdpt,           (virt >> 30) & 0x1FF);
+    uint64_t *pt   = next_table(pd,             (virt >> 21) & 0x1FF);
+    pt[(virt >> 12) & 0x1FF] = (phys & PTE_ADDR) | flags | PTE_P;
+}
+
+static void map_range(uint64_t virt, uint64_t phys, uint64_t len, uint64_t flags) {
+    for (uint64_t off = 0; off < len; off += 4096)
+        map_page(virt + off, phys + off, flags);
+}
+
+void load_cr3(void* cr3_value){
+	asm volatile("mov %0, %%cr3" :: "r"((uint64_t)cr3_value) : "memory");
+}
+
+void construct_pml4(void) {
+	PML4_PHYS_ADDR = alloc_table();
+	PML4_VIRT_ADDR = phys_to_virt(PML4_PHYS_ADDR);
+
+	// upper half: each entry points to its own empty PDPT (kernel only, no US)
+	for (int i = 256; i < 512; i++)
+		PML4_VIRT_ADDR[i] = alloc_table() | PML4_P | PML4_RW;
+}
+
+extern char __limine_start[], __limine_end[];
+extern char __text_start[],   __text_end[];
+extern char __rodata_start[], __rodata_end[];
+extern char __data_start[],   __data_end[];   // includes .bss
+
+void setup_paging(void) {
+	construct_pml4();
+
+	// 1. HHDM over the memory map
+	for (size_t i = 0; i < memmap->regions_number; i++) {
+		// if (memmap->region[i].type == <your BAD_MEMORY type>) continue;
+		uint64_t base = memmap->region[i].base & ~0xFFFull;
+		uint64_t end  = (memmap->region[i].base + memmap->region[i].length + 0xFFF) & ~0xFFFull;
+		map_range(kernel_state.hhdm_offset + base, base, end - base, PTE_RW | PTE_NX);
+	}
+
+	// 2. Kernel image, per section
+	map_range((uint64_t)__limine_start, KPHYS(__limine_start),
+		__limine_end - __limine_start,     PTE_RW | PTE_NX);   // requests (RW)
+	map_range((uint64_t)__text_start,   KPHYS(__text_start),
+		__text_end - __text_start,         0);                 // R+X
+	map_range((uint64_t)__rodata_start, KPHYS(__rodata_start),
+		__rodata_end - __rodata_start,     PTE_NX);            // R
+	map_range((uint64_t)__data_start,   KPHYS(__data_start),
+		__data_end - __data_start,         PTE_RW | PTE_NX);   // RW
+
+	// 3. Switch
+	load_cr3((void *)PML4_PHYS_ADDR);
+}
