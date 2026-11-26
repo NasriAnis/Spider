@@ -5,16 +5,34 @@ struct pmm_bitmap {
 	uint32_t max_rows;
 };
 
-struct region {
-	uintptr_t addr;
-	uint64_t len;
+/*
+ * Memory map regions strcutre gathered from LMINE
+ */
+
+#define MEMMAP_USABLE                 0
+#define MEMMAP_RESERVED               1
+#define MEMMAP_ACPI_RECLAIMABLE       2
+#define MEMMAP_ACPI_NVS               3
+#define MEMMAP_BAD_MEMORY             4
+#define MEMMAP_BOOTLOADER_RECLAIMABLE 5
+#define MEMMAP_EXECUTABLE_AND_MODULES 6
+#define MEMMAP_FRAMEBUFFER            7
+#define MEMMAP_RESERVED_MAPPED        8
+
+struct entries {
+	uintptr_t base;
+	uint64_t length;
+	uint64_t type;
 };
 
-struct mm_available_regions {
+struct memmap {
 	uint32_t regions_number;
 	uint64_t highest_address;
-	struct region region[];
+	struct entries region[];
 };
+extern struct memmap *memmap;
+
+void fill_memmap_struct(uintptr_t addr, uint64_t len, uint64_t type);
 
 #define BITS_PER_BITMAP_ROW 8
 #define PAGE_SIZE 4096

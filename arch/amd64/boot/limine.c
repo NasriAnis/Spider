@@ -79,9 +79,7 @@ void mmap_init(void) {
 	for (uint64_t i = 0; i < memmap_request.response->entry_count; i++) {
 		struct limine_memmap_entry *mm_entry = memmap_request.response->entries[i];
 
-		if (mm_entry->type == LIMINE_MEMMAP_USABLE) {
-			available_mm_register(mm_entry->base, mm_entry->length);
-		}
+		fill_memmap_struct(mm_entry->base, mm_entry->length, mm_entry->type);
 	}
 }
 

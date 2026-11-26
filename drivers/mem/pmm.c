@@ -10,15 +10,7 @@ struct bitmap_loc {
 
 struct mm_available_regions *mm_available_regions = 0;
 struct pmm_bitmap *pmm_bitmap = 0;
-
-// Address conversion helpers
-static inline void *phys_to_virt(uintptr_t phys) {
-	return (void *)(phys + kernel_state.hhdm_offset);
-}
-
-static inline uintptr_t virt_to_phys(void *virt) {
-	return (uintptr_t)virt - kernel_state.hhdm_offset;
-}
+struct memmap *memmap = 0;
 
 struct bitmap_loc get_bitmap_addr(uintptr_t phys_addr) {
 	uint64_t frame_index = phys_addr / PAGE_SIZE;
@@ -49,28 +41,23 @@ void fill_bitmap(uint64_t len, uintptr_t phys_addr, uint8_t value) {
 	}
 }
 
-void init_mm_tracking(void) {
-	// Store region tracking structure in kernel BSS space
-	mm_available_regions = (struct mm_available_regions *)kernel_state.kernel_virtual_end;
-	mm_available_regions->regions_number = 0;
-	mm_available_regions->highest_address = 0;
-}
-
-void available_mm_register(uintptr_t addr, uint64_t len) {
+void fill_memmap_struct(uintptr_t addr, uint64_t len, uint64_t type){
 	// if the structure hasnt been initialized into memory
-	if (!mm_available_regions) {
-		init_mm_tracking();
+	if (!memmap) {
+		memmap = (struct memmap *)kernel_state.kernel_virtual_end;
+		memmap->regions_number = 0;
+		memmap->highest_address = 0;
 	}
-
-	uint32_t idx = mm_available_regions->regions_number;
-
-	mm_available_regions->region[idx].addr = addr;
-	mm_available_regions->region[idx].len = len;
-	mm_available_regions->regions_number++;
-
-	if (mm_available_regions->highest_address < (addr + len)) {
-		mm_available_regions->highest_address = addr + len;
-	}
+		uint32_t idx = memmap->regions_number;
+	
+		memmap->region[idx].base = addr;
+		memmap->region[idx].length = len;
+		memmap->region[idx].type = type;
+		memmap->regions_number++;
+	
+		if (memmap->highest_address < (addr + len)) {
+			memmap->highest_address = addr + len;
+		}
 }
 
 void init_bitmap(uintptr_t end_addr) {
@@ -81,9 +68,9 @@ void init_bitmap(uintptr_t end_addr) {
 	uintptr_t bitmap_phys_addr = 0;
 
 	// Find a usable physical RAM block large enough for the bitmap
-	for (uint32_t i = 0; i < mm_available_regions->regions_number; i++) {
-		if (mm_available_regions->region[i].len >= required_bytes) {
-			bitmap_phys_addr = mm_available_regions->region[i].addr;
+	for (uint32_t i = 0; i < memmap->regions_number; i++) {
+		if (memmap->region[i].length >= required_bytes) {
+			bitmap_phys_addr = memmap->region[i].base;
 			break;
 		}
 	}
@@ -107,12 +94,16 @@ void init_bitmap(uintptr_t end_addr) {
 }
 
 void pmm_init_regions(void) {
-	init_bitmap(mm_available_regions->highest_address);
+	init_bitmap(memmap->highest_address);
 
 	// 1. Mark reported usable RAM regions as free (0)
-	uint32_t entries = mm_available_regions->regions_number;
+	uint32_t entries = memmap->regions_number;
 	for (uint32_t i = 0; i < entries; i++) {
-		fill_bitmap(mm_available_regions->region[i].len, mm_available_regions->region[i].addr, 0);
+		if (memmap->region[i].type == MEMMAP_USABLE){
+			fill_bitmap(memmap->region[i].length, memmap->region[i].base, 0);
+		} else {
+			fill_bitmap(memmap->region[i].length, memmap->region[i].base, 1);
+		}
 	}
 
 	// 2. Protect page 0 (NULL pointer trap)
