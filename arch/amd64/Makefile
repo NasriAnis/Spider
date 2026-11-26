@@ -1,4 +1,4 @@
-ROOT := ../..
+ROOT := $(abspath ../..)
 SRC_DIRS := $(ROOT)/kernel $(ROOT)/drivers $(ROOT)/lib $(ROOT)/font $(ROOT)/shell
 
 C_SOURCES := $(sort \
@@ -12,7 +12,7 @@ S_SOURCES := $(sort \
 OBJS      = $(C_SOURCES:.c=.o) $(S_SOURCES:.s=.o)
 DEPS = $(OBJS:.o=.d)
 
-FONT_OBJECT = $(ROOT)/font/font_object.o
+FONT_OBJECT = $(ROOT)/assets/font/font_object.o
 
 TARGET    = $(ROOT)/build/Spider-x86_64
 ISO    = $(ROOT)/build/spider.iso
@@ -79,9 +79,9 @@ $(TARGET): $(OBJS) $(FONT_OBJECT)
 	$(AS) -o $@ $<
 
 $(FONT_OBJECT):
-	make -C $(ROOT)/font x86_64
+	make -C $(ROOT)/assets/font x86_64
 
 clean:
 	rm -f boot.o $(OBJS) $(TARGET) $(ISO) $(DEPS)
 	rm -rf $(ISODIR)
-	make -C $(ROOT)/font clean
+	make -C $(ROOT)/assets/font clean
