@@ -10,6 +10,8 @@
 #include <msr.h>
 #include <kernel/logs.h>
 #include <arch.h>
+#include <paging.h>
+#include <drivers/mem/pmm.h>
 
 #define IA32_APIC_BASE_MSR 0x1B
 void disable_lapic_and_enable_pic(void) {
@@ -55,9 +57,15 @@ void init_arch(void) {
 		port_byte_in(0x60);
 	}
 
-
 	__asm__ volatile ("sti");
 	putsnl("[ok] Init IDT tables successfully");
+
+	pmm_init_regions();
+	putsnl("[ok] Init PMM successfully");
+
+	// TODO
+	setup_paging();
+	putsnl("[ok] Init Paging successfully");
 
 	show_logs(MISS, ARCH);
 }

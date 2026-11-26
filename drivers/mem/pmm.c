@@ -1,6 +1,5 @@
 #include <int.h>
 #include "pmm.h"
-#include <kernel/logs.h>
 #include <kernel/kernel.h>
 
 struct bitmap_loc {
@@ -8,7 +7,6 @@ struct bitmap_loc {
 	uint64_t col;
 };
 
-struct mm_available_regions *mm_available_regions = 0;
 struct pmm_bitmap *pmm_bitmap = 0;
 struct memmap *memmap = 0;
 

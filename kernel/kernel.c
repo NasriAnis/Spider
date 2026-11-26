@@ -1,7 +1,6 @@
 #include <io.h>
 #include <int.h>
 #include <shell/shell.h>
-#include <drivers/init.h>
 #include <drivers/mem/pmm.h>
 #include <kernel/console.h>
 #include <kernel/logs.h>
@@ -16,7 +15,6 @@ void kmain(void){
 	kernel_logs.log_number = 0;
 
 	init_arch();
-	init_kernel_utilities();
 	log_kernel_state();
 
 	putsnl("\nWelcome to the Spider Os !\n");
