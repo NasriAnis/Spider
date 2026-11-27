@@ -63,7 +63,7 @@ void setup_paging(void) {
 
 	// 1. HHDM over the memory map
 	for (size_t i = 0; i < memmap->regions_number; i++) {
-		// if (memmap->region[i].type == <your BAD_MEMORY type>) continue;
+		if (memmap->region[i].type == MEMMAP_BAD_MEMORY) continue;
 		uint64_t base = memmap->region[i].base & ~0xFFFull;
 		uint64_t end  = (memmap->region[i].base + memmap->region[i].length + 0xFFF) & ~0xFFFull;
 		map_range(kstate.hhdm_offset + base, base, end - base, PTE_RW | PTE_NX);
