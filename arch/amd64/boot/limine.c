@@ -48,10 +48,10 @@ void get_kernel_addr(void){
 		register_log(MISS, ARCH, "limine", "no executable address response");
 		return;
 	}
-	kernel_state.kernel_physical_base = kaddr_req.response->physical_base;
-	kernel_state.kernel_virtual_base = kaddr_req.response->virtual_base;
-	kernel_state.kernel_physical_end = kernel_state.kernel_physical_base + ((uintptr_t)&_kernel_end - (uintptr_t)&_kernel_start);
-	kernel_state.kernel_virtual_end = (uintptr_t)&_kernel_end;
+	kstate.kernel_physical_base = kaddr_req.response->physical_base;
+	kstate.kernel_virtual_base = kaddr_req.response->virtual_base;
+	kstate.kernel_physical_end = kstate.kernel_physical_base + ((uintptr_t)&_kernel_end - (uintptr_t)&_kernel_start);
+	kstate.kernel_virtual_end = (uintptr_t)&_kernel_end;
 }
 
 void fb_init(void) {
@@ -88,7 +88,7 @@ void hhdm_init(void) {
 		register_log(MISS, ARCH, "limine", "no HHDM offset response");
 		return;
 	}
-	kernel_state.hhdm_offset = hhdm_request.response->offset;
+	kstate.hhdm_offset = hhdm_request.response->offset;
 }
 
 void limine_parse_responses(void) {

@@ -6,7 +6,7 @@
 #include <kernel/logs.h>
 #include <arch.h>
 
-KernelState kernel_state = {0};
+KernelState kstate = {0};
 KernelLogs kernel_logs;
 
 void log_kernel_state();
@@ -28,9 +28,9 @@ void kmain(void){
 
 void log_kernel_state(){
 	printf("Kernel State:\n");
-	printf("- Kernel Physical base   : %p\n", kernel_state.kernel_physical_base);
-	printf("- Kernel Physical end    : %p\n", kernel_state.kernel_physical_end);
-	printf("- Kernel Virtual base    : %p\n", kernel_state.kernel_virtual_base);
-	printf("- Kernel Virtual end     : %p\n", kernel_state.kernel_virtual_end);
-	printf("- Kernel HHDM offset     : %p\n", kernel_state.hhdm_offset);
+	printf("- Kernel Physical base   : %p\n", kstate.kernel_physical_base);
+	printf("- Kernel Physical end    : %p\n", kstate.kernel_physical_end);
+	printf("- Kernel Virtual base    : %p\n", kstate.kernel_virtual_base);
+	printf("- Kernel Virtual end     : %p\n", kstate.kernel_virtual_end);
+	printf("- Kernel HHDM offset     : %p\n", kstate.hhdm_offset);
 }

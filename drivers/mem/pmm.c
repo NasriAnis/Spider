@@ -108,8 +108,8 @@ void pmm_init_regions(void) {
 	fill_bitmap(PAGE_SIZE, 0, 1);
 
 	// 3. Protect kernel physical memory range
-	uintptr_t kstart_phys = kernel_state.kernel_physical_base;
-	uintptr_t kend_phys = kernel_state.kernel_physical_end;
+	uintptr_t kstart_phys = kstate.kernel_physical_base;
+	uintptr_t kend_phys = kstate.kernel_physical_end;
 	fill_bitmap(kend_phys - kstart_phys, kstart_phys, 1);
 
 	// 4. Protect bitmap's own physical memory region

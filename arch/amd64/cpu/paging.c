@@ -66,7 +66,7 @@ void setup_paging(void) {
 		// if (memmap->region[i].type == <your BAD_MEMORY type>) continue;
 		uint64_t base = memmap->region[i].base & ~0xFFFull;
 		uint64_t end  = (memmap->region[i].base + memmap->region[i].length + 0xFFF) & ~0xFFFull;
-		map_range(kernel_state.hhdm_offset + base, base, end - base, PTE_RW | PTE_NX);
+		map_range(kstate.hhdm_offset + base, base, end - base, PTE_RW | PTE_NX);
 	}
 
 	// 2. Kernel image, per section

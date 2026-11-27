@@ -36,8 +36,8 @@ typedef struct {
 	LogInfo log[];
 } KernelLogs;
 
-extern KernelState kernel_state;
-extern KernelLogs kernel_logs;
+extern KernelState kstate;
+extern KernelLogs klogs;
 
 void register_log(enum LogType log_type, enum LogAtState at_state, char* issuer, char* log_message);
 void show_logs(enum LogType log_type, enum LogAtState at_state);

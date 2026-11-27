@@ -48,9 +48,9 @@ void available_mm_register(uintptr_t addr, uint64_t len);
 void pmm_init_regions();
 
 static inline void *phys_to_virt(uintptr_t phys) {
-	return (void *)(phys + kernel_state.hhdm_offset);
+	return (void *)(phys + kstate.hhdm_offset);
 }
 
 static inline uintptr_t virt_to_phys(void *virt) {
-	return (uintptr_t)virt - kernel_state.hhdm_offset;
+	return (uintptr_t)virt - kstate.hhdm_offset;
 }
