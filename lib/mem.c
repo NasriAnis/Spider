@@ -1,7 +1,7 @@
 #include <int.h>
 #include <drivers/mem/pmm.h>
 
-void memset(uint32_t *dest, uint8_t val, uint32_t len) {
+void memset(void *dest, uint8_t val, uint32_t len) {
 	uint8_t *temp = (uint8_t *)dest;
 	for ( ; len != 0; len--) *temp++ = val;
 }

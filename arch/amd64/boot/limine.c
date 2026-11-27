@@ -48,10 +48,10 @@ void get_kernel_addr(void){
 		register_log(MISS, ARCH, "limine", "no executable address response");
 		return;
 	}
-	kernel_state.kernel_physical_base = kaddr_req.response->physical_base;
-	kernel_state.kernel_virtual_base = kaddr_req.response->virtual_base;
-	kernel_state.kernel_physical_end = kernel_state.kernel_physical_base + ((uintptr_t)&_kernel_end - (uintptr_t)&_kernel_start);
-	kernel_state.kernel_virtual_end = (uintptr_t)&_kernel_end;
+	kstate.kernel_physical_base = kaddr_req.response->physical_base;
+	kstate.kernel_virtual_base = kaddr_req.response->virtual_base;
+	kstate.kernel_physical_end = kstate.kernel_physical_base + ((uintptr_t)&_kernel_end - (uintptr_t)&_kernel_start);
+	kstate.kernel_virtual_end = (uintptr_t)&_kernel_end;
 }
 
 void fb_init(void) {
@@ -79,9 +79,7 @@ void mmap_init(void) {
 	for (uint64_t i = 0; i < memmap_request.response->entry_count; i++) {
 		struct limine_memmap_entry *mm_entry = memmap_request.response->entries[i];
 
-		if (mm_entry->type == LIMINE_MEMMAP_USABLE) {
-			available_mm_register(mm_entry->base, mm_entry->length);
-		}
+		fill_memmap_struct(mm_entry->base, mm_entry->length, mm_entry->type);
 	}
 }
 
@@ -90,7 +88,18 @@ void hhdm_init(void) {
 		register_log(MISS, ARCH, "limine", "no HHDM offset response");
 		return;
 	}
-	kernel_state.hhdm_offset = hhdm_request.response->offset;
+	kstate.hhdm_offset = hhdm_request.response->offset;
+}
+
+void reclaim_limine_memory(void) {
+	for (size_t i = 0; i < memmap->regions_number; i++) {
+		struct entries *e = &memmap->region[i];
+		if (e->type != MEMMAP_BOOTLOADER_RECLAIMABLE)
+			continue;
+
+		pmm_free(e->base, e->length);
+		e->type = MEMMAP_USABLE;
+	}
 }
 
 void limine_parse_responses(void) {
@@ -103,3 +112,4 @@ void limine_parse_responses(void) {
 	mmap_init();
 	hhdm_init();
 }
+

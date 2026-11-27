@@ -1,26 +1,19 @@
 #include <int.h>
 #include "pmm.h"
-#include <kernel/logs.h>
 #include <kernel/kernel.h>
 
+// helper struct for physical address
+// localisation in the bitmap
 struct bitmap_loc {
 	uint64_t row;
 	uint64_t col;
 };
 
-struct mm_available_regions *mm_available_regions = 0;
+// bitmap will be mapped later at init_bitmap()
 struct pmm_bitmap *pmm_bitmap = 0;
+struct memmap *memmap = 0;
 
-// Address conversion helpers
-static inline void *phys_to_virt(uintptr_t phys) {
-	return (void *)(phys + kernel_state.hhdm_offset);
-}
-
-static inline uintptr_t virt_to_phys(void *virt) {
-	return (uintptr_t)virt - kernel_state.hhdm_offset;
-}
-
-struct bitmap_loc get_bitmap_addr(uintptr_t phys_addr) {
+static struct bitmap_loc get_bitmap_addr(uintptr_t phys_addr) {
 	uint64_t frame_index = phys_addr / PAGE_SIZE;
 	struct bitmap_loc loc = {
 		.row = frame_index / BITS_PER_BITMAP_ROW,
@@ -29,15 +22,15 @@ struct bitmap_loc get_bitmap_addr(uintptr_t phys_addr) {
 	return loc;
 }
 
-uintptr_t get_physical_addr(uint64_t row, uint64_t col) {
+static uintptr_t get_physical_addr(uint64_t row, uint64_t col) {
 	return ((row * BITS_PER_BITMAP_ROW) + col) * PAGE_SIZE;
 }
 
-uint32_t get_pmm_bit(uint64_t row, uint64_t col) {
+static uint32_t get_pmm_bit(uint64_t row, uint64_t col) {
 	return (pmm_bitmap->data[row] >> col) & 0b1;
 }
 
-void fill_bitmap(uint64_t len, uintptr_t phys_addr, uint8_t value) {
+static void fill_bitmap(uint64_t len, uintptr_t phys_addr, uint8_t value) {
 	for (uint64_t current = phys_addr; current < phys_addr + len; current += PAGE_SIZE) {
 		struct bitmap_loc loc = get_bitmap_addr(current);
 
@@ -49,31 +42,7 @@ void fill_bitmap(uint64_t len, uintptr_t phys_addr, uint8_t value) {
 	}
 }
 
-void init_mm_tracking(void) {
-	// Store region tracking structure in kernel BSS space
-	mm_available_regions = (struct mm_available_regions *)kernel_state.kernel_virtual_end;
-	mm_available_regions->regions_number = 0;
-	mm_available_regions->highest_address = 0;
-}
-
-void available_mm_register(uintptr_t addr, uint64_t len) {
-	// if the structure hasnt been initialized into memory
-	if (!mm_available_regions) {
-		init_mm_tracking();
-	}
-
-	uint32_t idx = mm_available_regions->regions_number;
-
-	mm_available_regions->region[idx].addr = addr;
-	mm_available_regions->region[idx].len = len;
-	mm_available_regions->regions_number++;
-
-	if (mm_available_regions->highest_address < (addr + len)) {
-		mm_available_regions->highest_address = addr + len;
-	}
-}
-
-void init_bitmap(uintptr_t end_addr) {
+static void init_bitmap(uintptr_t end_addr) {
 	uint64_t total_frames = (end_addr + PAGE_SIZE - 1) / PAGE_SIZE;
 	uint64_t bitmap_bytes = (total_frames + 7) / 8;
 	uint64_t required_bytes = sizeof(struct pmm_bitmap) + bitmap_bytes;
@@ -81,9 +50,9 @@ void init_bitmap(uintptr_t end_addr) {
 	uintptr_t bitmap_phys_addr = 0;
 
 	// Find a usable physical RAM block large enough for the bitmap
-	for (uint32_t i = 0; i < mm_available_regions->regions_number; i++) {
-		if (mm_available_regions->region[i].len >= required_bytes) {
-			bitmap_phys_addr = mm_available_regions->region[i].addr;
+	for (uint32_t i = 0; i < memmap->regions_number; i++) {
+		if (memmap->region[i].length >= required_bytes) {
+			bitmap_phys_addr = memmap->region[i].base;
 			break;
 		}
 	}
@@ -106,21 +75,28 @@ void init_bitmap(uintptr_t end_addr) {
 	}
 }
 
+/*
+ * Public Physical memory managment fonctions
+ */
 void pmm_init_regions(void) {
-	init_bitmap(mm_available_regions->highest_address);
+	init_bitmap(memmap->highest_address);
 
 	// 1. Mark reported usable RAM regions as free (0)
-	uint32_t entries = mm_available_regions->regions_number;
+	uint32_t entries = memmap->regions_number;
 	for (uint32_t i = 0; i < entries; i++) {
-		fill_bitmap(mm_available_regions->region[i].len, mm_available_regions->region[i].addr, 0);
+		if (memmap->region[i].type == MEMMAP_USABLE){
+			fill_bitmap(memmap->region[i].length, memmap->region[i].base, 0);
+		} else {
+			fill_bitmap(memmap->region[i].length, memmap->region[i].base, 1);
+		}
 	}
 
 	// 2. Protect page 0 (NULL pointer trap)
 	fill_bitmap(PAGE_SIZE, 0, 1);
 
 	// 3. Protect kernel physical memory range
-	uintptr_t kstart_phys = kernel_state.kernel_physical_base;
-	uintptr_t kend_phys = kernel_state.kernel_physical_end;
+	uintptr_t kstart_phys = kstate.kernel_physical_base;
+	uintptr_t kend_phys = kstate.kernel_physical_end;
 	fill_bitmap(kend_phys - kstart_phys, kstart_phys, 1);
 
 	// 4. Protect bitmap's own physical memory region
@@ -157,4 +133,24 @@ uintptr_t pmm_alloc(uint32_t size) {
 
 void pmm_free(uintptr_t pointer, uint64_t size) {
 	fill_bitmap(size, pointer, 0);
+}
+
+// Initialize the memory mapped structure to save the mmap of the device
+void fill_memmap_struct(uintptr_t addr, uint64_t len, uint64_t type){
+	// if the structure hasnt been initialized into memory
+	if (!memmap) {
+		memmap = (struct memmap *)kstate.kernel_virtual_end;
+		memmap->regions_number = 0;
+		memmap->highest_address = 0;
+	}
+		uint32_t idx = memmap->regions_number;
+
+		memmap->region[idx].base = addr;
+		memmap->region[idx].length = len;
+		memmap->region[idx].type = type;
+		memmap->regions_number++;
+
+		if (memmap->highest_address < (addr + len)) {
+			memmap->highest_address = addr + len;
+		}
 }
