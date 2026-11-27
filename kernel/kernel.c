@@ -7,12 +7,12 @@
 #include <arch.h>
 
 KernelState kstate = {0};
-KernelLogs kernel_logs;
+KernelLogs klogs = {0};
 
 void log_kernel_state();
 
 void kmain(void){
-	kernel_logs.log_number = 0;
+	klogs.log_number = 0;
 
 	init_arch();
 	log_kernel_state();
