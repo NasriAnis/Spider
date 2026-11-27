@@ -4,13 +4,13 @@
 #include <drivers/mem/pmm.h>
 #include <kernel/kernel.h>
 
+extern char __limine_start[], __limine_end[];
+extern char __text_start[],   __text_end[];
+extern char __rodata_start[], __rodata_end[];
+extern char __data_start[],   __data_end[];   // includes .bss
+
 uint64_t *PML4_VIRT_ADDR;
 uint64_t PML4_PHYS_ADDR;
-
-#define PTE_P    (1ull << 0)
-#define PTE_RW   (1ull << 1)
-#define PTE_NX   (1ull << 63)
-#define PTE_ADDR 0x000FFFFFFFFFF000ull
 
 static uint64_t alloc_table(void) {
 	uint64_t phys = (uint64_t)pmm_alloc(4096);
@@ -52,11 +52,6 @@ void construct_pml4(void) {
 	for (int i = 256; i < 512; i++)
 		PML4_VIRT_ADDR[i] = alloc_table() | PML4_P | PML4_RW;
 }
-
-extern char __limine_start[], __limine_end[];
-extern char __text_start[],   __text_end[];
-extern char __rodata_start[], __rodata_end[];
-extern char __data_start[],   __data_end[];   // includes .bss
 
 void setup_paging(void) {
 	construct_pml4();

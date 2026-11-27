@@ -39,26 +39,7 @@ void fill_bitmap(uint64_t len, uintptr_t phys_addr, uint8_t value) {
 	}
 }
 
-void fill_memmap_struct(uintptr_t addr, uint64_t len, uint64_t type){
-	// if the structure hasnt been initialized into memory
-	if (!memmap) {
-		memmap = (struct memmap *)kernel_state.kernel_virtual_end;
-		memmap->regions_number = 0;
-		memmap->highest_address = 0;
-	}
-		uint32_t idx = memmap->regions_number;
-	
-		memmap->region[idx].base = addr;
-		memmap->region[idx].length = len;
-		memmap->region[idx].type = type;
-		memmap->regions_number++;
-	
-		if (memmap->highest_address < (addr + len)) {
-			memmap->highest_address = addr + len;
-		}
-}
-
-void init_bitmap(uintptr_t end_addr) {
+static void init_bitmap(uintptr_t end_addr) {
 	uint64_t total_frames = (end_addr + PAGE_SIZE - 1) / PAGE_SIZE;
 	uint64_t bitmap_bytes = (total_frames + 7) / 8;
 	uint64_t required_bytes = sizeof(struct pmm_bitmap) + bitmap_bytes;
@@ -91,6 +72,9 @@ void init_bitmap(uintptr_t end_addr) {
 	}
 }
 
+/*
+ * Public Physical memory managment fonctions
+ */
 void pmm_init_regions(void) {
 	init_bitmap(memmap->highest_address);
 
@@ -146,4 +130,24 @@ uintptr_t pmm_alloc(uint32_t size) {
 
 void pmm_free(uintptr_t pointer, uint64_t size) {
 	fill_bitmap(size, pointer, 0);
+}
+
+// Initialize the memory mapped structure to save the mmap of the device
+void fill_memmap_struct(uintptr_t addr, uint64_t len, uint64_t type){
+	// if the structure hasnt been initialized into memory
+	if (!memmap) {
+		memmap = (struct memmap *)kstate.kernel_virtual_end;
+		memmap->regions_number = 0;
+		memmap->highest_address = 0;
+	}
+		uint32_t idx = memmap->regions_number;
+
+		memmap->region[idx].base = addr;
+		memmap->region[idx].length = len;
+		memmap->region[idx].type = type;
+		memmap->regions_number++;
+
+		if (memmap->highest_address < (addr + len)) {
+			memmap->highest_address = addr + len;
+		}
 }
