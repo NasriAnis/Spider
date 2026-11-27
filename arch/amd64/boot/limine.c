@@ -91,6 +91,17 @@ void hhdm_init(void) {
 	kstate.hhdm_offset = hhdm_request.response->offset;
 }
 
+void reclaim_limine_memory(void) {
+	for (size_t i = 0; i < memmap->regions_number; i++) {
+		struct entries *e = &memmap->region[i];
+		if (e->type != MEMMAP_BOOTLOADER_RECLAIMABLE)
+			continue;
+
+		pmm_free(e->base, e->length);
+		e->type = MEMMAP_USABLE;
+	}
+}
+
 void limine_parse_responses(void) {
 	if (LIMINE_BASE_REVISION_SUPPORTED(limine_base_revision) == 0) {
 		return;

@@ -66,5 +66,7 @@ void init_arch(void) {
 	setup_paging();
 	putsnl("[ok] Init Paging successfully");
 
+	reclaim_limine_memory();
+
 	show_logs(MISS, ARCH);
 }
