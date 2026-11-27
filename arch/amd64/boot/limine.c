@@ -112,3 +112,4 @@ void limine_parse_responses(void) {
 	mmap_init();
 	hhdm_init();
 }
+
