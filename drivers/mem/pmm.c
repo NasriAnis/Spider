@@ -2,11 +2,14 @@
 #include "pmm.h"
 #include <kernel/kernel.h>
 
+// helper struct for physical address
+// localisation in the bitmap
 struct bitmap_loc {
 	uint64_t row;
 	uint64_t col;
 };
 
+// bitmap will be mapped later at init_bitmap()
 struct pmm_bitmap *pmm_bitmap = 0;
 struct memmap *memmap = 0;
 

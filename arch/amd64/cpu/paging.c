@@ -65,6 +65,9 @@ void setup_paging(void) {
 	}
 
 	// 2. Kernel image, per section
+	// We use KPHYS because we are using the linker script fetched memory addresses
+	// so to get the real physiscal address we should add to it the difference of
+	// the kernel virtual and phys base
 	map_range((uint64_t)__limine_start, KPHYS(__limine_start),
 		__limine_end - __limine_start,     PTE_RW | PTE_NX);   // requests (RW)
 	map_range((uint64_t)__text_start,   KPHYS(__text_start),

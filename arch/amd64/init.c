@@ -63,7 +63,6 @@ void init_arch(void) {
 	pmm_init_regions();
 	putsnl("[ok] Init PMM successfully");
 
-	// TODO
 	setup_paging();
 	putsnl("[ok] Init Paging successfully");
 

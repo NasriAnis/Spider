@@ -35,6 +35,10 @@ extern struct memmap *memmap;
 
 void fill_memmap_struct(uintptr_t addr, uint64_t len, uint64_t type);
 
+/*
+ * Bitmap struct informations
+ */
+
 #define BITS_PER_BITMAP_ROW 8
 #define PAGE_SIZE 4096
 
