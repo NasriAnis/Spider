@@ -28,7 +28,7 @@ static uint64_t *next_table(uint64_t *table, size_t idx) {
     return (uint64_t *)phys_to_virt(table[idx] & PTE_ADDR);
 }
 
-void map_page(uint64_t virt, uint64_t phys, uint64_t flags) {
+static void map_page(uint64_t virt, uint64_t phys, uint64_t flags) {
     uint64_t *pdpt = next_table(PML4_VIRT_ADDR, (virt >> 39) & 0x1FF);
     uint64_t *pd   = next_table(pdpt,           (virt >> 30) & 0x1FF);
     uint64_t *pt   = next_table(pd,             (virt >> 21) & 0x1FF);

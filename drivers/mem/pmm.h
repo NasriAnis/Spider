@@ -43,8 +43,6 @@ void fill_memmap_struct(uintptr_t addr, uint64_t len, uint64_t type);
  */
 uintptr_t pmm_alloc(uint32_t size);
 void pmm_free(uintptr_t pointer, uint64_t size);
-
-void available_mm_register(uintptr_t addr, uint64_t len);
 void pmm_init_regions();
 
 static inline void *phys_to_virt(uintptr_t phys) {

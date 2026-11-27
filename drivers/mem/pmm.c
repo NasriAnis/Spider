@@ -10,7 +10,7 @@ struct bitmap_loc {
 struct pmm_bitmap *pmm_bitmap = 0;
 struct memmap *memmap = 0;
 
-struct bitmap_loc get_bitmap_addr(uintptr_t phys_addr) {
+static struct bitmap_loc get_bitmap_addr(uintptr_t phys_addr) {
 	uint64_t frame_index = phys_addr / PAGE_SIZE;
 	struct bitmap_loc loc = {
 		.row = frame_index / BITS_PER_BITMAP_ROW,
@@ -19,15 +19,15 @@ struct bitmap_loc get_bitmap_addr(uintptr_t phys_addr) {
 	return loc;
 }
 
-uintptr_t get_physical_addr(uint64_t row, uint64_t col) {
+static uintptr_t get_physical_addr(uint64_t row, uint64_t col) {
 	return ((row * BITS_PER_BITMAP_ROW) + col) * PAGE_SIZE;
 }
 
-uint32_t get_pmm_bit(uint64_t row, uint64_t col) {
+static uint32_t get_pmm_bit(uint64_t row, uint64_t col) {
 	return (pmm_bitmap->data[row] >> col) & 0b1;
 }
 
-void fill_bitmap(uint64_t len, uintptr_t phys_addr, uint8_t value) {
+static void fill_bitmap(uint64_t len, uintptr_t phys_addr, uint8_t value) {
 	for (uint64_t current = phys_addr; current < phys_addr + len; current += PAGE_SIZE) {
 		struct bitmap_loc loc = get_bitmap_addr(current);
 
